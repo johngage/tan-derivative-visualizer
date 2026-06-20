@@ -3,242 +3,379 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Geometric Derivative of tan(θ) — Needham</title>
+  <title>Geometric Derivative of tan(θ) — Tristan Needham</title>
+  <meta name="description" content="An interactive geometric proof of d/dθ tan(θ) = sec²(θ) = 1 + tan²(θ), following Tristan Needham's Visual Complex Analysis. Animate the limit process on a unit circle." />
+  <meta property="og:title" content="Geometric Derivative of tan(θ)" />
+  <meta property="og:description" content="Watch the limit process unfold geometrically on a unit circle — Needham's proof that d/dθ tan(θ) = 1 + tan²(θ)." />
+  <meta name="theme-color" content="#0d0f14" />
 
-  <!-- Fonts: JetBrains Mono for math labels, General Sans for UI -->
+  <!-- Fonts -->
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600&display=swap" rel="stylesheet" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── Design tokens ─── */
+    /* ════════════════════════════════════════════════════════
+       DESIGN TOKENS
+    ════════════════════════════════════════════════════════ */
     :root {
-      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
-      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
-      --space-1: 0.25rem;
-      --space-2: 0.5rem;
-      --space-3: 0.75rem;
-      --space-4: 1rem;
-      --space-5: 1.25rem;
-      --space-6: 1.5rem;
-      --space-8: 2rem;
-      --space-10: 2.5rem;
+      --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+      --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+      --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+      --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+      --text-2xl:  clamp(2rem,     1.2rem  + 2.5vw,  3.5rem);
+
+      --sp-1:  0.25rem; --sp-2: 0.5rem;  --sp-3: 0.75rem;
+      --sp-4:  1rem;    --sp-5: 1.25rem; --sp-6: 1.5rem;
+      --sp-8:  2rem;    --sp-10:2.5rem;  --sp-12:3rem;
+      --sp-16: 4rem;    --sp-20:5rem;    --sp-24:6rem;
+
       --radius-sm: 0.375rem;
       --radius-md: 0.5rem;
       --radius-lg: 0.75rem;
-      --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --radius-xl: 1rem;
+      --radius-full: 9999px;
+
+      --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in:      cubic-bezier(0.4, 0, 1, 1);
+      --ease-in-out:  cubic-bezier(0.4, 0, 0.2, 1);
+      --tr:           180ms cubic-bezier(0.16, 1, 0.3, 1);
+
       --font-display: 'JetBrains Mono', monospace;
-      --font-body: 'General Sans', 'Inter', sans-serif;
+      --font-body:    'General Sans', 'Inter', sans-serif;
     }
 
-    /* ─── Dark palette (default) ─── */
+    /* ─── Dark theme (default) ─── */
     :root, [data-theme="dark"] {
-      --bg:             #0d0f14;
-      --surface:        #12151c;
-      --surface-2:      #171b24;
-      --surface-3:      #1e2330;
-      --border:         #2a3044;
-      --border-bright:  #3a4460;
-      --text:           #d4d8e8;
-      --text-muted:     #7a8299;
-      --text-faint:     #424860;
-      --accent:         #5b8dee;
-      --accent-dim:     #2a4a8a;
-      --accent-glow:    rgba(91,141,238,0.18);
-      --gold:           #e6b54a;
-      --gold-dim:       #7a5820;
-      --gold-glow:      rgba(230,181,74,0.18);
-      --green:          #4dc98a;
-      --green-dim:      #1a5c3c;
-      --red:            #e86060;
-      --red-dim:        #5c2424;
-      --purple:         #a57fde;
-      --purple-dim:     #3d2870;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+      --bg:            #0d0f14;
+      --surface:       #12151c;
+      --surface-2:     #171b24;
+      --surface-3:     #1e2330;
+      --border:        #2a3044;
+      --border-hi:     #3a4460;
+      --text:          #d4d8e8;
+      --text-muted:    #7a8299;
+      --text-faint:    #424860;
+      --accent:        #5b8dee;
+      --accent-dim:    rgba(91,141,238,0.15);
+      --accent-glow:   rgba(91,141,238,0.25);
+      --gold:          #e6b54a;
+      --gold-dim:      rgba(230,181,74,0.15);
+      --green:         #4dc98a;
+      --green-dim:     rgba(77,201,138,0.15);
+      --red:           #e86060;
+      --red-dim:       rgba(232,96,96,0.15);
+      --purple:        #a57fde;
+      --purple-dim:    rgba(165,127,222,0.15);
+      --sh-sm: 0 1px 3px  rgba(0,0,0,0.4);
+      --sh-md: 0 4px 16px rgba(0,0,0,0.5);
+      --sh-lg: 0 12px 48px rgba(0,0,0,0.7);
     }
 
-    /* ─── Light palette ─── */
+    /* ─── Light theme ─── */
     [data-theme="light"] {
-      --bg:             #f4f6fb;
-      --surface:        #ffffff;
-      --surface-2:      #f8f9fd;
-      --surface-3:      #eef1f8;
-      --border:         #d0d6e8;
-      --border-bright:  #a8b4d0;
-      --text:           #1a1f30;
-      --text-muted:     #5a6380;
-      --text-faint:     #9aa0b8;
-      --accent:         #2b5dc4;
-      --accent-dim:     #d0dcf5;
-      --accent-glow:    rgba(43,93,196,0.12);
-      --gold:           #b87820;
-      --gold-dim:       #f5e8cc;
-      --gold-glow:      rgba(184,120,32,0.12);
-      --green:          #1a8c56;
-      --green-dim:      #d0f0e0;
-      --red:            #c43030;
-      --red-dim:        #fde0e0;
-      --purple:         #7040c0;
-      --purple-dim:     #e8d8f8;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-      --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
-      --shadow-lg: 0 12px 40px rgba(0,0,0,0.16);
+      --bg:            #f0f2f8;
+      --surface:       #ffffff;
+      --surface-2:     #f6f8fd;
+      --surface-3:     #edf0f8;
+      --border:        #cdd3e8;
+      --border-hi:     #a0accc;
+      --text:          #1a1f30;
+      --text-muted:    #555e7a;
+      --text-faint:    #99a0b8;
+      --accent:        #2b5dc4;
+      --accent-dim:    rgba(43,93,196,0.1);
+      --accent-glow:   rgba(43,93,196,0.2);
+      --gold:          #a06010;
+      --gold-dim:      rgba(160,96,16,0.1);
+      --green:         #1a7a4a;
+      --green-dim:     rgba(26,122,74,0.1);
+      --red:           #bb2828;
+      --red-dim:       rgba(187,40,40,0.1);
+      --purple:        #6030b0;
+      --purple-dim:    rgba(96,48,176,0.1);
+      --sh-sm: 0 1px 3px  rgba(0,0,0,0.08);
+      --sh-md: 0 4px 16px rgba(0,0,0,0.1);
+      --sh-lg: 0 12px 48px rgba(0,0,0,0.15);
     }
 
-    /* ─── Base reset ─── */
+    /* ════════════════════════════════════════════════════════
+       BASE RESET
+    ════════════════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html {
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       scroll-behavior: smooth;
+      hanging-punctuation: first last;
     }
     body {
       font-family: var(--font-body);
-      font-size: var(--text-sm);
+      font-size: var(--text-base);
       color: var(--text);
       background: var(--bg);
-      min-height: 100dvh;
-      overflow: hidden;
+      line-height: 1.65;
     }
-    @media (max-width: 800px) { body { overflow: auto; } }
+    img, picture, video, canvas, svg { display: block; max-width: 100%; }
+    p, li { text-wrap: pretty; max-width: 72ch; }
+    h1, h2, h3, h4 { text-wrap: balance; line-height: 1.2; }
     button { cursor: pointer; background: none; border: none; color: inherit; font: inherit; }
     input[type="range"] { cursor: pointer; }
 
-    /* ─── App shell ─── */
-    .app {
-      display: grid;
-      grid-template-rows: auto 1fr;
-      grid-template-columns: 1fr 360px;
-      height: 100dvh;
-      gap: 0;
-    }
-    @media (max-width: 800px) {
-      .app {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto auto;
-        height: auto;
+    ::selection { background: var(--accent-glow); color: var(--text); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: var(--radius-sm); }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
       }
     }
 
-    /* ─── Header ─── */
-    .header {
-      grid-column: 1 / -1;
+    /* ════════════════════════════════════════════════════════
+       PAGE LAYOUT
+    ════════════════════════════════════════════════════════ */
+
+    /* ─── Top nav ─── */
+    .site-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: var(--space-3) var(--space-6);
-      background: var(--surface);
+      padding: 0 var(--sp-6);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      gap: var(--space-4);
+      gap: var(--sp-4);
     }
-    .header-left {
+    .nav-brand {
       display: flex;
-      align-items: baseline;
-      gap: var(--space-4);
-      flex: 1;
-      min-width: 0;
+      align-items: center;
+      gap: var(--sp-3);
+      text-decoration: none;
+      color: var(--text);
     }
-    .site-title {
+    .nav-logo {
+      flex-shrink: 0;
+    }
+    .nav-title {
       font-family: var(--font-display);
-      font-size: var(--text-sm);
+      font-size: var(--text-xs);
       font-weight: 500;
       color: var(--text);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .site-subtitle {
+    .nav-subtitle {
       font-size: var(--text-xs);
       color: var(--text-muted);
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
-    .header-logo {
-      flex-shrink: 0;
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-3);
     }
-    .theme-toggle {
+    .nav-link {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: var(--sp-1) var(--sp-2);
+      border-radius: var(--radius-sm);
+      transition: color var(--tr), background var(--tr);
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--text); background: var(--surface-3); }
+    .nav-icon-btn {
       width: 32px; height: 32px;
       border-radius: var(--radius-md);
       display: flex; align-items: center; justify-content: center;
       color: var(--text-muted);
-      transition: background var(--transition), color var(--transition);
+      transition: background var(--tr), color var(--tr);
     }
-    .theme-toggle:hover { background: var(--surface-3); color: var(--text); }
-
-    /* ─── Main canvas area ─── */
-    .canvas-area {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      background: var(--bg);
-      overflow: hidden;
+    .nav-icon-btn:hover { background: var(--surface-3); color: var(--text); }
+    @media (max-width: 600px) {
+      .nav-subtitle, .nav-link { display: none; }
     }
-    @media (max-width: 800px) { .canvas-area { min-height: 420px; } }
 
-    /* ─── SVG viewport ─── */
-    #main-svg {
+    /* ─── Hero ─── */
+    .hero {
+      padding: calc(56px + var(--sp-20)) var(--sp-6) var(--sp-16);
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: var(--sp-1) var(--sp-3);
+      border: 1px solid var(--accent-dim);
+      border-radius: var(--radius-full);
+      background: var(--accent-dim);
+      margin-bottom: var(--sp-6);
+    }
+    .hero-eyebrow span { opacity: 0.6; }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--sp-5);
+      letter-spacing: -0.02em;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .hero-lead {
+      font-size: var(--text-lg);
+      color: var(--text-muted);
+      margin-bottom: var(--sp-8);
+      max-width: 60ch;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-6);
+      background: var(--accent);
+      color: #fff;
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity var(--tr), transform var(--tr);
+    }
+    .hero-cta:hover { opacity: 0.85; transform: translateY(-1px); }
+    .hero-cta:active { transform: translateY(0); }
+    .hero-cta svg { flex-shrink: 0; }
+
+    /* ─── Section divider ─── */
+    .section-rule {
       width: 100%;
-      height: 100%;
+      height: 1px;
+      background: var(--border);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       INTERACTIVE CANVAS SECTION (sticky scroll layout)
+    ════════════════════════════════════════════════════════ */
+    .canvas-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--sp-16) var(--sp-6);
+    }
+    .canvas-section-header {
+      text-align: center;
+      margin-bottom: var(--sp-12);
+    }
+    .section-label {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: var(--sp-3);
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--sp-4);
+      letter-spacing: -0.02em;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 56ch;
+      margin: 0 auto;
+    }
+
+    /* Explore widget (non-scroll, full interactive) */
+    .explore-widget {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--sh-lg);
+    }
+    @media (max-width: 900px) {
+      .explore-widget { grid-template-columns: 1fr; }
+    }
+    .explore-canvas {
+      position: relative;
+      aspect-ratio: 5/4;
+      min-height: 380px;
+      background: var(--bg);
+    }
+    @media (max-width: 900px) {
+      .explore-canvas { aspect-ratio: 4/3; }
+    }
+    #main-svg {
+      width: 100%; height: 100%;
       display: block;
     }
 
-    /* ─── Controls bar ─── */
-    .controls {
+    /* Controls bar inside canvas */
+    .canvas-controls {
       position: absolute;
-      bottom: var(--space-5);
+      bottom: var(--sp-4);
       left: 50%;
       transform: translateX(-50%);
-      background: var(--surface);
+      background: color-mix(in oklab, var(--surface) 92%, transparent);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: var(--space-3) var(--space-5);
+      padding: var(--sp-3) var(--sp-5);
       display: flex;
       align-items: center;
-      gap: var(--space-6);
-      box-shadow: var(--shadow-lg);
-      backdrop-filter: blur(12px);
+      gap: var(--sp-5);
+      box-shadow: var(--sh-md);
       white-space: nowrap;
-    }
-    @media (max-width: 800px) {
-      .controls {
-        position: relative;
-        bottom: auto; left: auto; transform: none;
-        border-radius: 0;
-        border-left: none; border-right: none;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: var(--space-4);
-      }
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .ctrl-group {
       display: flex;
       align-items: center;
-      gap: var(--space-3);
+      gap: var(--sp-2);
     }
     .ctrl-label {
       font-family: var(--font-display);
       font-size: var(--text-xs);
       color: var(--text-muted);
-      min-width: 2.5rem;
+      min-width: 1.8rem;
     }
     .ctrl-value {
       font-family: var(--font-display);
       font-size: var(--text-xs);
       color: var(--text);
-      min-width: 3.5rem;
+      min-width: 3rem;
       text-align: right;
     }
     input[type="range"] {
       -webkit-appearance: none;
-      width: 130px;
-      height: 4px;
+      width: 110px; height: 4px;
       border-radius: 2px;
       background: var(--surface-3);
       outline: none;
@@ -249,25 +386,19 @@
       border-radius: 50%;
       background: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
-      transition: box-shadow var(--transition);
+      transition: box-shadow var(--tr);
     }
-    input[type="range"]:hover::-webkit-slider-thumb {
-      box-shadow: 0 0 0 5px var(--accent-glow);
-    }
-    .ctrl-divider {
-      width: 1px;
-      height: 24px;
-      background: var(--border);
-    }
+    input[type="range"]:hover::-webkit-slider-thumb { box-shadow: 0 0 0 5px var(--accent-glow); }
+    .ctrl-sep { width: 1px; height: 20px; background: var(--border); }
     .ctrl-btn {
-      padding: var(--space-1) var(--space-3);
+      padding: var(--sp-1) var(--sp-3);
       border-radius: var(--radius-sm);
       font-family: var(--font-display);
       font-size: var(--text-xs);
-      font-weight: 500;
+      font-weight: 600;
       background: var(--accent);
-      color: white;
-      transition: opacity var(--transition), transform var(--transition);
+      color: #fff;
+      transition: opacity var(--tr), transform var(--tr);
     }
     .ctrl-btn:hover { opacity: 0.85; }
     .ctrl-btn:active { transform: scale(0.97); }
@@ -277,1006 +408,1253 @@
       border: 1px solid var(--border);
     }
     .ctrl-btn.secondary:hover { background: var(--border); }
+    .ctrl-btn.animating { background: var(--gold); color: #1a1000; }
 
-    /* ─── Side panel ─── */
-    .side-panel {
-      background: var(--surface);
+    /* Explore side panel */
+    .explore-side {
       border-left: 1px solid var(--border);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 0;
     }
-    @media (max-width: 800px) {
-      .side-panel { border-left: none; border-top: 1px solid var(--border); }
+    @media (max-width: 900px) {
+      .explore-side { border-left: none; border-top: 1px solid var(--border); max-height: 340px; }
     }
-    .panel-section {
-      padding: var(--space-5) var(--space-6);
+    .explore-panel {
+      padding: var(--sp-5) var(--sp-5);
       border-bottom: 1px solid var(--border);
     }
-    .panel-section:last-child { border-bottom: none; }
-    .panel-heading {
+    .explore-panel:last-child { border-bottom: none; }
+    .panel-label {
       font-family: var(--font-display);
       font-size: var(--text-xs);
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
-      margin-bottom: var(--space-4);
+      margin-bottom: var(--sp-4);
     }
 
-    /* ─── Step cards ─── */
-    .step-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-    .step-card {
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      overflow: hidden;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      cursor: pointer;
-    }
-    .step-card.active {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent), 0 4px 12px var(--accent-glow);
-    }
-    .step-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      padding: var(--space-3) var(--space-4);
-    }
-    .step-num {
-      font-family: var(--font-display);
-      font-size: var(--text-xs);
-      font-weight: 700;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      background: var(--surface-3);
-      color: var(--text-muted);
-      flex-shrink: 0;
-      transition: background var(--transition), color var(--transition);
-    }
-    .step-card.active .step-num {
-      background: var(--accent);
-      color: white;
-    }
-    .step-title {
-      font-size: var(--text-xs);
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.4;
-    }
-    .step-body {
-      padding: 0 var(--space-4) var(--space-3) calc(20px + var(--space-3) + var(--space-4));
-      font-size: var(--text-xs);
-      color: var(--text-muted);
-      line-height: 1.7;
-      display: none;
-    }
-    .step-card.active .step-body { display: block; }
-
-    /* ─── Math formula display ─── */
-    .formula-box {
-      border-radius: var(--radius-md);
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      padding: var(--space-4) var(--space-5);
-      margin-top: var(--space-2);
-      font-family: var(--font-display);
-      font-size: var(--text-xs);
-      color: var(--text);
-      line-height: 1.8;
-    }
-    .f-blue { color: var(--accent); }
-    .f-gold { color: var(--gold); }
-    .f-green { color: var(--green); }
-    .f-red { color: var(--red); }
-    .f-purple { color: var(--purple); }
-
-    /* ─── Derived value display ─── */
-    .result-panel {
-      background: var(--surface-3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: var(--space-4);
+    /* Live values grid */
+    .live-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-3) var(--space-4);
+      gap: var(--sp-3) var(--sp-4);
     }
-    .result-item {}
-    .result-label {
+    .lv-label {
       font-family: var(--font-display);
       font-size: var(--text-xs);
       color: var(--text-muted);
-      margin-bottom: var(--space-1);
+      margin-bottom: 2px;
     }
-    .result-value {
+    .lv-val {
       font-family: var(--font-display);
       font-size: var(--text-sm);
-      font-weight: 500;
+      font-weight: 600;
       color: var(--text);
     }
-    .result-value.accent { color: var(--accent); }
-    .result-value.gold { color: var(--gold); }
-    .result-value.green { color: var(--green); }
-    .result-value.red { color: var(--red); }
+    .lv-val.c-accent  { color: var(--accent); }
+    .lv-val.c-gold    { color: var(--gold); }
+    .lv-val.c-green   { color: var(--green); }
+    .lv-val.c-red     { color: var(--red); }
 
-    /* ─── Legend ─── */
-    .legend {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      font-size: var(--text-xs);
-      color: var(--text-muted);
-    }
-    .legend-swatch {
-      width: 20px; height: 3px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-    .legend-swatch.dashed {
-      background: none;
-      border-top: 2px dashed currentColor;
-    }
-
-    /* ─── SVG element styles ─── */
-    /* These are applied via JS but defined here for reference */
-    .svg-grid-line { stroke: var(--border); stroke-width: 1; }
-    .svg-axis { stroke: var(--border-bright); stroke-width: 1.5; }
-
-    /* ─── Scrollbar ─── */
-    .side-panel::-webkit-scrollbar { width: 6px; }
-    .side-panel::-webkit-scrollbar-track { background: transparent; }
-    .side-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-    /* ─── Tooltip ─── */
-    .tooltip {
-      position: absolute;
-      pointer-events: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: var(--space-2) var(--space-3);
-      font-family: var(--font-display);
-      font-size: var(--text-xs);
-      color: var(--text);
-      box-shadow: var(--shadow-md);
-      opacity: 0;
-      transition: opacity 0.15s;
-      z-index: 10;
-      white-space: nowrap;
-    }
-
-    /* ─── Animate button state ─── */
-    .ctrl-btn.animating {
-      background: var(--gold);
-    }
-
-    /* ─── Convergence meter ─── */
-    .convergence-meter {
-      margin-top: var(--space-4);
-    }
-    .conv-label {
+    /* Convergence meter */
+    .conv-meter { margin-top: var(--sp-4); }
+    .conv-header {
+      display: flex; justify-content: space-between;
       font-family: var(--font-display);
       font-size: var(--text-xs);
       color: var(--text-muted);
-      margin-bottom: var(--space-2);
-      display: flex;
-      justify-content: space-between;
+      margin-bottom: var(--sp-2);
     }
-    .conv-bar-track {
-      height: 8px;
-      border-radius: 4px;
+    .conv-track {
+      height: 6px; border-radius: 3px;
       background: var(--surface-3);
-      overflow: hidden;
       border: 1px solid var(--border);
+      overflow: hidden;
     }
-    .conv-bar-fill {
-      height: 100%;
-      border-radius: 4px;
+    .conv-fill {
+      height: 100%; border-radius: 3px;
       background: linear-gradient(90deg, var(--red), var(--gold), var(--green));
       transition: width 0.2s ease;
-      width: 30%;
+      width: 0%;
     }
     .conv-note {
       font-family: var(--font-display);
       font-size: var(--text-xs);
       color: var(--text-faint);
-      margin-top: var(--space-2);
+      margin-top: var(--sp-2);
       text-align: center;
     }
+
+    /* Legend */
+    .legend { display: flex; flex-direction: column; gap: var(--sp-2); }
+    .legend-row {
+      display: flex; align-items: center; gap: var(--sp-3);
+      font-size: var(--text-xs); color: var(--text-muted);
+    }
+    .legend-pip {
+      width: 22px; height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       SCROLL NARRATIVE SECTION
+    ════════════════════════════════════════════════════════ */
+    .narrative {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--sp-16) var(--sp-6);
+    }
+    .narrative-header {
+      text-align: center;
+      margin-bottom: var(--sp-16);
+    }
+    /* Two-column sticky layout */
+    .narrative-body {
+      display: grid;
+      grid-template-columns: 1fr 440px;
+      gap: var(--sp-12);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .narrative-body { grid-template-columns: 1fr; gap: var(--sp-8); }
+    }
+
+    /* Steps column */
+    .narrative-steps { }
+
+    /* Step card */
+    .nstep {
+      position: relative;
+      padding: var(--sp-8) 0;
+      border-bottom: 1px solid var(--border);
+      opacity: 0.4;
+      transition: opacity 0.4s var(--ease-out);
+    }
+    .nstep:last-child { border-bottom: none; }
+    .nstep.is-active { opacity: 1; }
+    .nstep-num {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: var(--sp-3);
+      display: flex; align-items: center; gap: var(--sp-2);
+    }
+    .nstep-num::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--accent-dim);
+    }
+    .nstep h3 {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--sp-4);
+      letter-spacing: -0.015em;
+    }
+    .nstep p {
+      color: var(--text-muted);
+      font-size: var(--text-base);
+      line-height: 1.75;
+      margin-bottom: var(--sp-3);
+    }
+    .nstep p:last-of-type { margin-bottom: 0; }
+    .nstep strong { color: var(--text); font-weight: 600; }
+    .nstep .f-blue   { color: var(--accent); }
+    .nstep .f-gold   { color: var(--gold); }
+    .nstep .f-green  { color: var(--green); }
+    .nstep .f-red    { color: var(--red); }
+    .nstep .f-purple { color: var(--purple); }
+    .formula-block {
+      margin: var(--sp-5) 0;
+      padding: var(--sp-4) var(--sp-5);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-md);
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text);
+    }
+
+    /* Sticky canvas (narrative RHS) */
+    .narrative-canvas-wrap {
+      position: sticky;
+      top: calc(56px + var(--sp-6));
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--sh-lg);
+    }
+    @media (max-width: 900px) {
+      .narrative-canvas-wrap {
+        position: static;
+        margin-bottom: var(--sp-8);
+      }
+    }
+    .narr-svg-wrap {
+      position: relative;
+      aspect-ratio: 1/1;
+    }
+    #narr-svg {
+      width: 100%; height: 100%;
+      display: block;
+    }
+
+    /* Step indicator bar under narrative SVG */
+    .narr-step-bar {
+      display: flex;
+      gap: var(--sp-2);
+      padding: var(--sp-3) var(--sp-4);
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+    }
+    .narr-pip {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: var(--border);
+      transition: background 0.3s var(--ease-out);
+    }
+    .narr-pip.active { background: var(--accent); }
+
+    /* Step label under SVG */
+    .narr-step-label {
+      padding: var(--sp-3) var(--sp-4);
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      min-height: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+    .narr-step-label strong { color: var(--accent); }
+
+    /* ════════════════════════════════════════════════════════
+       PROOF IDENTITY SECTION
+    ════════════════════════════════════════════════════════ */
+    .identity-section {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: var(--sp-16) var(--sp-6);
+    }
+    .identity-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .identity-formula {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--text);
+      margin: var(--sp-8) 0;
+      padding: var(--sp-6) var(--sp-8);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      letter-spacing: -0.01em;
+      line-height: 1.6;
+    }
+    .identity-formula .hi-blue   { color: var(--accent); }
+    .identity-formula .hi-gold   { color: var(--gold); }
+    .identity-formula .hi-green  { color: var(--green); }
+    .identity-formula .hi-red    { color: var(--red); }
+    .identity-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--sp-4);
+      margin-top: var(--sp-8);
+      text-align: left;
+    }
+    .id-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--sp-5);
+    }
+    .id-card-num {
+      font-family: var(--font-display);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: var(--sp-2);
+    }
+    .id-card-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--sp-2);
+    }
+    .id-card-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════════════════════ */
+    .site-footer {
+      padding: var(--sp-12) var(--sp-6) var(--sp-8);
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--sp-8);
+      align-items: start;
+    }
+    @media (max-width: 600px) { .site-footer { grid-template-columns: 1fr; } }
+    .footer-about { max-width: 44ch; }
+    .footer-title {
+      font-family: var(--font-display);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: var(--sp-2);
+    }
+    .footer-desc {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+    .footer-links { display: flex; flex-direction: column; gap: var(--sp-2); }
+    .footer-link {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex; align-items: center; gap: var(--sp-2);
+      transition: color var(--tr);
+    }
+    .footer-link:hover { color: var(--accent); }
+    .footer-bottom {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--sp-4) var(--sp-6);
+      border-top: 1px solid var(--border);
+      font-size: var(--text-xs);
+      color: var(--text-faint);
+      display: flex;
+      justify-content: space-between;
+      gap: var(--sp-4);
+      flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       UTILITY
+    ════════════════════════════════════════════════════════ */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border-width: 0;
+    }
+    .explore-side::-webkit-scrollbar { width: 5px; }
+    .explore-side::-webkit-scrollbar-track { background: transparent; }
+    .explore-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   </style>
 </head>
 <body>
-<div class="app">
 
-  <!-- Header -->
-  <header class="header">
-    <div class="header-left">
-      <!-- Logo -->
-      <div class="header-logo">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Tangent Derivative Logo">
-          <circle cx="14" cy="14" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.4"/>
-          <line x1="14" y1="14" x2="22.7" y2="14" stroke="#5b8dee" stroke-width="2" stroke-linecap="round"/>
-          <line x1="14" y1="14" x2="19.9" y2="6.5" stroke="#e6b54a" stroke-width="2" stroke-linecap="round"/>
-          <line x1="22.7" y1="6.5" x2="22.7" y2="14" stroke="#4dc98a" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="14" cy="14" r="2" fill="#5b8dee"/>
-          <circle cx="22.7" cy="6.5" r="1.5" fill="#e6b54a"/>
+  <!-- ════ TOP NAV ════ -->
+  <nav class="site-nav" role="navigation" aria-label="Site navigation">
+    <a class="nav-brand" href="#top">
+      <div class="nav-logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="8" stroke="currentColor" stroke-width="1.5" opacity="0.35"/>
+          <line x1="14" y1="14" x2="22.7" y2="14" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="14" y1="14" x2="19.9" y2="6.5" stroke="var(--gold)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="22.7" y1="6.5" x2="22.7" y2="14" stroke="var(--green)" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="14" r="2" fill="var(--accent)"/>
+          <circle cx="22.7" cy="6.5" r="1.5" fill="var(--gold)"/>
         </svg>
       </div>
       <div>
-        <div class="site-title">d/dθ tan(θ) = 1 + tan²(θ)</div>
-        <div class="site-subtitle">Tristan Needham · Visual Complex Analysis, Ch. 2</div>
+        <div class="nav-title">d/dθ tan(θ) = 1 + tan²(θ)</div>
+        <div class="nav-subtitle">Needham · Visual Complex Analysis</div>
       </div>
+    </a>
+    <div class="nav-right">
+      <a class="nav-link" href="#explore">Explore</a>
+      <a class="nav-link" href="#proof">Proof</a>
+      <a class="nav-link" href="https://github.com/johngage/tan-derivative-visualizer" target="_blank" rel="noopener" aria-label="GitHub repository">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
+      <button class="nav-icon-btn" data-theme-toggle aria-label="Toggle theme">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
-    <button class="theme-toggle" data-theme-toggle aria-label="Switch to light mode">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-      </svg>
-    </button>
-  </header>
+  </nav>
 
-  <!-- Main SVG canvas -->
-  <main class="canvas-area">
-    <svg id="main-svg" viewBox="0 0 600 500" preserveAspectRatio="xMidYMid meet" aria-label="Geometric derivation canvas"></svg>
-    <div class="tooltip" id="tooltip"></div>
-
-    <!-- Controls -->
-    <div class="controls">
-      <div class="ctrl-group">
-        <span class="ctrl-label">θ</span>
-        <input type="range" id="theta-slider" min="5" max="75" value="35" step="1" />
-        <span class="ctrl-value" id="theta-val">35°</span>
-      </div>
-      <div class="ctrl-divider"></div>
-      <div class="ctrl-group">
-        <span class="ctrl-label">Δθ</span>
-        <input type="range" id="dtheta-slider" min="1" max="35" value="20" step="1" />
-        <span class="ctrl-value" id="dtheta-val">20°</span>
-      </div>
-      <div class="ctrl-divider"></div>
-      <button class="ctrl-btn" id="animate-btn">Animate Limit</button>
-      <button class="ctrl-btn secondary" id="reset-btn">Reset</button>
+  <!-- ════ HERO ════ -->
+  <section class="hero" id="top">
+    <div class="hero-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="5"/></svg>
+      Interactive Mathematical Visualization
+      <span>·</span>
+      Civic Data Tools
     </div>
-  </main>
+    <h1>Geometric derivative of<br/><em>tan(θ)</em></h1>
+    <p class="hero-lead">
+      Tristan Needham's purely geometric proof that the derivative of tan(θ) equals sec²(θ) — 
+      visualized through a limit process on the unit circle, no calculus required until the very end.
+    </p>
+    <a class="hero-cta" href="#explore">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      Explore interactively
+    </a>
+  </section>
 
-  <!-- Side panel -->
-  <aside class="side-panel">
+  <div class="section-rule"></div>
 
-    <!-- Live values -->
-    <div class="panel-section">
-      <div class="panel-heading">Live Values</div>
-      <div class="result-panel">
-        <div class="result-item">
-          <div class="result-label">θ</div>
-          <div class="result-value accent" id="rv-theta">35.0°</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">tan(θ)</div>
-          <div class="result-value gold" id="rv-tan">0.7002</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Δθ</div>
-          <div class="result-value green" id="rv-dtheta">20.0°</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">Δtan / Δθ</div>
-          <div class="result-value" id="rv-ratio">—</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">1 + tan²(θ)</div>
-          <div class="result-value red" id="rv-deriv">1.4902</div>
-        </div>
-        <div class="result-item">
-          <div class="result-label">sec²(θ)</div>
-          <div class="result-value" id="rv-sec2">1.4902</div>
-        </div>
-      </div>
-
-      <!-- Convergence meter -->
-      <div class="convergence-meter">
-        <div class="conv-label">
-          <span>Δtan/Δθ → sec²θ convergence</span>
-          <span id="conv-pct">—</span>
-        </div>
-        <div class="conv-bar-track">
-          <div class="conv-bar-fill" id="conv-bar"></div>
-        </div>
-        <div class="conv-note" id="conv-note">Shrink Δθ to see convergence</div>
-      </div>
+  <!-- ════ INTERACTIVE EXPLORER ════ -->
+  <section class="canvas-section" id="explore">
+    <div class="canvas-section-header">
+      <div class="section-label">Free exploration</div>
+      <h2 class="section-title">Manipulate the geometry</h2>
+      <p class="section-desc">
+        Drag θ and Δθ to reshape the diagram live. Hit "Animate Limit" to watch Δθ shrink toward zero
+        and the ratio Δtan/Δθ converge to sec²(θ).
+      </p>
     </div>
 
-    <!-- Geometric steps -->
-    <div class="panel-section">
-      <div class="panel-heading">Geometric Proof</div>
-      <div class="step-list" id="step-list">
+    <div class="explore-widget">
+      <!-- SVG canvas -->
+      <div class="explore-canvas">
+        <svg id="main-svg" viewBox="0 0 560 480" preserveAspectRatio="xMidYMid meet" aria-label="Interactive geometric derivation of tan(θ)"></svg>
 
-        <div class="step-card active" data-step="0">
-          <div class="step-header">
-            <div class="step-num">1</div>
-            <div class="step-title">Setup: unit circle & tangent line</div>
+        <div class="canvas-controls">
+          <div class="ctrl-group">
+            <span class="ctrl-label">θ</span>
+            <input type="range" id="theta-slider" min="5" max="75" value="35" step="1" aria-label="Angle theta" />
+            <span class="ctrl-value" id="theta-val">35°</span>
           </div>
-          <div class="step-body">
-            Draw a unit circle (radius = 1). The point
-            <span class="f-blue">P = (cos θ, sin θ)</span> sits on the circle.
-            The <span class="f-gold">tangent line</span> is the vertical line
-            x = 1. Its height — where the radial ray at angle θ meets x = 1 —
-            is exactly <span class="f-gold">tan(θ)</span>.
-            <div class="formula-box">
-              tan(θ) = sin(θ) / cos(θ)
-              = <span class="f-gold">height on tangent line</span>
+          <div class="ctrl-sep"></div>
+          <div class="ctrl-group">
+            <span class="ctrl-label">Δθ</span>
+            <input type="range" id="dtheta-slider" min="1" max="35" value="20" step="1" aria-label="Angle increment delta theta" />
+            <span class="ctrl-value" id="dtheta-val">20°</span>
+          </div>
+          <div class="ctrl-sep"></div>
+          <button class="ctrl-btn" id="animate-btn">Animate Limit</button>
+          <button class="ctrl-btn secondary" id="reset-btn">Reset</button>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="explore-side">
+        <!-- Live values -->
+        <div class="explore-panel">
+          <div class="panel-label">Live Values</div>
+          <div class="live-grid">
+            <div>
+              <div class="lv-label">θ</div>
+              <div class="lv-val c-accent" id="rv-theta">35.0°</div>
+            </div>
+            <div>
+              <div class="lv-label">tan(θ)</div>
+              <div class="lv-val c-gold" id="rv-tan">0.7002</div>
+            </div>
+            <div>
+              <div class="lv-label">Δθ</div>
+              <div class="lv-val c-green" id="rv-dtheta">20.0°</div>
+            </div>
+            <div>
+              <div class="lv-label">Δtan / Δθ</div>
+              <div class="lv-val" id="rv-ratio">—</div>
+            </div>
+            <div>
+              <div class="lv-label">1 + tan²(θ)</div>
+              <div class="lv-val c-red" id="rv-deriv">1.4903</div>
+            </div>
+            <div>
+              <div class="lv-label">sec²(θ)</div>
+              <div class="lv-val" id="rv-sec2">1.4903</div>
+            </div>
+          </div>
+          <!-- Convergence meter -->
+          <div class="conv-meter">
+            <div class="conv-header">
+              <span>Δtan/Δθ → sec²θ</span>
+              <span id="conv-pct">—</span>
+            </div>
+            <div class="conv-track">
+              <div class="conv-fill" id="conv-bar"></div>
+            </div>
+            <div class="conv-note" id="conv-note">Shrink Δθ to see convergence</div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="explore-panel">
+          <div class="panel-label">Legend</div>
+          <div class="legend">
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--accent)"></div>
+              Unit circle · radial ray at θ
+            </div>
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--gold)"></div>
+              tan(θ) — height on x = 1 line
+            </div>
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--green)"></div>
+              Second ray at θ + Δθ
+            </div>
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--red)"></div>
+              Δtan — the increment to explain
+            </div>
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--purple)"></div>
+              Similar triangle at P
+            </div>
+            <div class="legend-row">
+              <div class="legend-pip" style="background:var(--text-muted); border-top:2px dashed var(--text-muted); height:0"></div>
+              Arc PQ ≈ Δθ (radians)
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="step-card" data-step="1">
-          <div class="step-header">
-            <div class="step-num">2</div>
-            <div class="step-title">Add Δθ: a second ray</div>
+  <div class="section-rule"></div>
+
+  <!-- ════ SCROLL NARRATIVE ════ -->
+  <section class="narrative" id="proof">
+    <div class="narrative-header">
+      <div class="section-label">Step-by-step geometric proof</div>
+      <h2 class="section-title">Scroll through the derivation</h2>
+      <p class="section-desc">
+        Each step activates a stage of the proof on the diagram. The SVG updates as you read — 
+        no interaction required.
+      </p>
+    </div>
+
+    <div class="narrative-body">
+
+      <!-- Steps (left column) -->
+      <div class="narrative-steps" id="narrative-steps">
+
+        <div class="nstep is-active" data-narr-step="0">
+          <div class="nstep-num">Step 01</div>
+          <h3>Set up the unit circle and tangent line</h3>
+          <p>
+            Draw a <strong>unit circle</strong> centred at the origin O. A point
+            <span class="f-blue">P = (cos θ, sin θ)</span> sits on the circle, reached by a radial
+            ray at angle θ. The <span class="f-gold">tangent line</span> is the vertical line x = 1 —
+            it is tangent to the circle at (1, 0).
+          </p>
+          <p>
+            Where the ray OP, when extended, meets the line x = 1, the height of that intersection
+            above the x-axis is exactly <span class="f-gold">tan(θ)</span> = sin(θ)/cos(θ). 
+            This is the geometric definition of tangent.
+          </p>
+          <div class="formula-block">
+            tan(θ) = <span class="f-gold">height on x = 1</span> = sin(θ) / cos(θ)
           </div>
-          <div class="step-body">
-            Advance to angle <span class="f-green">θ + Δθ</span>.
-            The new ray meets x = 1 at height
+        </div>
+
+        <div class="nstep" data-narr-step="1">
+          <div class="nstep-num">Step 02</div>
+          <h3>Add a second ray at θ + Δθ</h3>
+          <p>
+            Advance the angle by a small increment <span class="f-green">Δθ</span>, creating a
+            second ray at angle <span class="f-green">θ + Δθ</span>. This ray meets x = 1 at height
             <span class="f-green">tan(θ + Δθ)</span>.
-            The change in height is
-            <span class="f-red">Δtan = tan(θ + Δθ) − tan(θ)</span>.
-            <div class="formula-box">
-              <span class="f-gold">tan(θ)</span> → <span class="f-green">tan(θ+Δθ)</span><br/>
-              <span class="f-red">Δtan</span> = difference in heights
-            </div>
+          </p>
+          <p>
+            The vertical gap between the two intersection points on the tangent line is
+            <span class="f-red">Δtan = tan(θ + Δθ) − tan(θ)</span>. We want to understand this gap
+            geometrically as Δθ → 0.
+          </p>
+          <div class="formula-block">
+            <span class="f-red">Δtan</span> = <span class="f-green">tan(θ+Δθ)</span> − <span class="f-gold">tan(θ)</span>
           </div>
         </div>
 
-        <div class="step-card" data-step="2">
-          <div class="step-header">
-            <div class="step-num">3</div>
-            <div class="step-title">Key triangle on the circle</div>
-          </div>
-          <div class="step-body">
-            The arc <span class="f-purple">PQ</span> between the two points
-            on the unit circle has length ≈ Δθ (in radians) when Δθ is small.
-            The chord PQ is nearly perpendicular to the radius at P.
-            This is the <strong>infinitesimal right triangle</strong>
-            at the heart of the proof.
-            <div class="formula-box">
-              |arc PQ| ≈ Δθ (radians)<br/>
-              chord ⊥ radius (limit)
-            </div>
-          </div>
-        </div>
-
-        <div class="step-card" data-step="3">
-          <div class="step-header">
-            <div class="step-num">4</div>
-            <div class="step-title">Similar triangles link arc to Δtan</div>
-          </div>
-          <div class="step-body">
-            The small triangle at P on the circle is
-            <strong>similar</strong> to the large right triangle formed by the
-            origin, the foot of the tangent, and the top of the tan segment.
-            The large triangle has hypotenuse = 1/cos(θ) = sec(θ),
-            so by similarity:
-            <div class="formula-box">
-              Δtan / Δθ ≈ <span class="f-red">sec(θ)</span> × sec(θ)<br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="f-red">sec²(θ)</span>
-            </div>
+        <div class="nstep" data-narr-step="2">
+          <div class="nstep-num">Step 03</div>
+          <h3>The arc PQ on the unit circle</h3>
+          <p>
+            Points P and Q are the tips of the two radial rays on the unit circle. The arc
+            between them has length equal to the <strong>angle in radians</strong>: |arc PQ| = Δθ.
+          </p>
+          <p>
+            When Δθ is small, the <strong>chord PQ ≈ arc PQ ≈ Δθ</strong>, and the chord is
+            nearly <strong>perpendicular to the radius OP</strong> at P.
+            This perpendicularity is exact in the limit Δθ → 0 — it is the geometric
+            fact that a tangent to a circle is perpendicular to the radius.
+          </p>
+          <div class="formula-block">
+            |chord PQ| ≈ Δθ (radians) as Δθ → 0
           </div>
         </div>
 
-        <div class="step-card" data-step="4">
-          <div class="step-header">
-            <div class="step-num">5</div>
-            <div class="step-title">Take the limit: Δθ → 0</div>
+        <div class="nstep" data-narr-step="3">
+          <div class="nstep-num">Step 04</div>
+          <h3>Similar triangles connect arc to Δtan</h3>
+          <p>
+            Here is Needham's key insight. The small triangle at P (formed by the chord PQ,
+            the radius OP, and a perpendicular) is <span class="f-purple">geometrically similar</span> to
+            the large right triangle formed by:
+          </p>
+          <p>
+            the origin O, the foot of the tangent line (1, 0), and the point (1, tan θ).
+            That large triangle has base = 1, height = tan(θ), and
+            hypotenuse = <span class="f-purple">sec(θ)</span> = 1/cos(θ).
+          </p>
+          <p>
+            By the similarity ratio, the Δtan increment relates to the arc Δθ via the
+            square of the secant:
+          </p>
+          <div class="formula-block">
+            Δtan / Δθ ≈ <span class="f-purple">sec(θ) × sec(θ)</span> = sec²(θ)
           </div>
-          <div class="step-body">
-            As <span class="f-green">Δθ → 0</span>, the similar-triangle
-            approximation becomes exact. The ratio Δtan / Δθ converges to
-            sec²(θ). Since sec²(θ) = 1 + tan²(θ) (Pythagorean identity),
-            we get the beautiful geometric result:
-            <div class="formula-box">
-              d/dθ [tan θ] = <span class="f-blue">sec²(θ)</span><br/>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= <span class="f-red">1 + tan²(θ)</span>
-            </div>
+        </div>
+
+        <div class="nstep" data-narr-step="4">
+          <div class="nstep-num">Step 05</div>
+          <h3>Take the limit — Δθ → 0</h3>
+          <p>
+            As <span class="f-green">Δθ → 0</span>, the chord-to-arc ratio → 1, the perpendicularity
+            of PQ to OP becomes exact, and the similar-triangle approximation becomes an equality.
+            The ratio Δtan/Δθ converges to <strong>sec²(θ)</strong>.
+          </p>
+          <p>
+            Finally, the <strong>Pythagorean identity</strong> sec²(θ) = 1 + tan²(θ) gives us
+            the result in its most beautiful form — the derivative of tan(θ) expressed
+            entirely in terms of tan(θ) itself:
+          </p>
+          <div class="formula-block">
+            <strong>d/dθ [tan θ] = sec²(θ) = <span class="f-red">1 + tan²(θ)</span></strong>
           </div>
+          <p>
+            Drag <span class="f-green">Δθ</span> to nearly zero in the interactive explorer above
+            and watch the ratio column turn green as the approximation becomes exact.
+          </p>
         </div>
 
       </div>
-    </div>
 
-    <!-- Legend -->
-    <div class="panel-section">
-      <div class="panel-heading">Legend</div>
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#5b8dee; width:20px;"></div>
-          Unit circle & radial ray at θ
+      <!-- Sticky canvas (right column) -->
+      <div class="narrative-canvas-wrap">
+        <div class="narr-svg-wrap">
+          <svg id="narr-svg" viewBox="0 0 420 420" preserveAspectRatio="xMidYMid meet" aria-label="Geometric proof canvas — updates as you scroll"></svg>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#e6b54a; width:20px;"></div>
-          tan(θ) segment (height on x=1)
+        <!-- Step indicator -->
+        <div class="narr-step-bar" id="narr-pip-bar">
+          <div class="narr-pip active" data-pip="0"></div>
+          <div class="narr-pip" data-pip="1"></div>
+          <div class="narr-pip" data-pip="2"></div>
+          <div class="narr-pip" data-pip="3"></div>
+          <div class="narr-pip" data-pip="4"></div>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#4dc98a; width:20px;"></div>
-          Second ray at θ + Δθ
+        <div class="narr-step-label" id="narr-step-label">
+          <strong>01</strong> Unit circle &amp; tangent line
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#e86060; width:20px;"></div>
-          Δtan increment
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════ IDENTITY SUMMARY ════ -->
+  <section class="identity-section">
+    <div class="identity-inner">
+      <div class="section-label">The complete result</div>
+      <h2 class="section-title">Why it's geometrically elegant</h2>
+      <div class="identity-formula">
+        <div><span class="hi-blue">d/dθ</span> [ <span class="hi-gold">tan θ</span> ] = <span class="hi-blue">sec²(θ)</span> = <span class="hi-red">1 + tan²(θ)</span></div>
+      </div>
+      <p style="color:var(--text-muted);max-width:52ch;margin:0 auto;">
+        The derivative of tan(θ) is expressed entirely in terms of tan(θ) itself.
+        No limits computed analytically — only similar triangles, the definition of
+        arc length, and one Pythagorean identity.
+      </p>
+      <div class="identity-steps">
+        <div class="id-card">
+          <div class="id-card-num">01</div>
+          <div class="id-card-title">Unit circle definition</div>
+          <div class="id-card-desc">tan(θ) is the height on the vertical tangent line x = 1 where the radial ray meets it.</div>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#a57fde; width:20px;"></div>
-          Similar triangle (proof mechanism)
+        <div class="id-card">
+          <div class="id-card-num">02</div>
+          <div class="id-card-title">Arc length = Δθ (rad)</div>
+          <div class="id-card-desc">On a unit circle, arc length equals the subtended angle in radians. This is why radians are natural.</div>
         </div>
-        <div class="legend-item">
-          <div class="legend-swatch" style="background:#888; width:20px; border-top:2px dashed #888; height:0;"></div>
-          Arc PQ on circle
+        <div class="id-card">
+          <div class="id-card-num">03</div>
+          <div class="id-card-title">Similar triangles</div>
+          <div class="id-card-desc">The tiny chord triangle at P is similar to the large secant triangle — the similarity ratio is sec(θ).</div>
+        </div>
+        <div class="id-card">
+          <div class="id-card-num">04</div>
+          <div class="id-card-title">Pythagorean identity</div>
+          <div class="id-card-desc">sec²(θ) = 1 + tan²(θ) reveals that the derivative is a quadratic in the function itself.</div>
         </div>
       </div>
     </div>
+  </section>
 
-  </aside>
-</div>
+  <!-- ════ FOOTER ════ -->
+  <footer>
+    <div class="site-footer">
+      <div class="footer-about">
+        <div class="footer-title">Geometric Derivative of tan(θ)</div>
+        <div class="footer-desc">
+          An interactive data visualization resource from the civic technology toolkit
+          of John Gage, Berkeley CA. Built to demonstrate how geometric reasoning can
+          make calculus proofs tangible and shareable. Based on Chapter 2 of
+          <em>Visual Complex Analysis</em> by Tristan Needham (Oxford University Press).
+        </div>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link" href="https://github.com/johngage/tan-derivative-visualizer" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub source
+        </a>
+        <a class="footer-link" href="https://global.oup.com/academic/product/visual-complex-analysis-9780198534990" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          Visual Complex Analysis (Needham)
+        </a>
+        <a class="footer-link" href="https://johngage.github.io" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+          johngage.github.io
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Built with SVG + vanilla JS · No external dependencies · MIT License</span>
+      <span>John Gage · Berkeley, CA · 2026</span>
+    </div>
+  </footer>
 
-<script>
-// ─── State ───────────────────────────────────────────────────────────────────
-let theta = 35;    // degrees
-let dtheta = 20;   // degrees
-let animating = false;
-let animRaf = null;
+  <!-- ════════════════════════════════════════════════════════
+       JAVASCRIPT
+  ════════════════════════════════════════════════════════ -->
+  <script>
+  'use strict';
 
-// ─── SVG helpers ─────────────────────────────────────────────────────────────
-const svg = document.getElementById('main-svg');
-const NS = 'http://www.w3.org/2000/svg';
-
-function el(tag, attrs = {}) {
-  const e = document.createElementNS(NS, tag);
-  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
-  return e;
-}
-
-function line(x1, y1, x2, y2, attrs = {}) {
-  return el('line', { x1, y1, x2, y2, ...attrs });
-}
-
-function circle(cx, cy, r, attrs = {}) {
-  return el('circle', { cx, cy, r, ...attrs });
-}
-
-function path(d, attrs = {}) {
-  return el('path', { d, ...attrs });
-}
-
-function text(x, y, str, attrs = {}) {
-  const t = el('text', { x, y, ...attrs });
-  t.textContent = str;
-  return t;
-}
-
-// ─── Coordinate mapping ────────────────────────────────────────────────────
-// SVG viewBox: 600 × 500
-// We want origin roughly at (200, 260), unit circle radius = 130
-
-const VW = 600, VH = 500;
-const OX = 190, OY = 265;   // origin in SVG coords
-const R = 130;               // unit circle radius in px
-
-function toSVG(x, y) {
-  return [OX + x * R, OY - y * R];
-}
-
-// ─── Color tokens from CSS vars ────────────────────────────────────────────
-function cssVar(name) {
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-}
-
-// ─── Main render ──────────────────────────────────────────────────────────
-function render() {
-  svg.innerHTML = '';
-
-  const th = theta * Math.PI / 180;
-  const dth = dtheta * Math.PI / 180;
-  const th2 = th + dth;
-
-  const tanTh  = Math.tan(th);
-  const tanTh2 = Math.tan(th2);
-  const secTh  = 1 / Math.cos(th);
-
-  // ── Grid ──
-  const gridGroup = el('g', { opacity: '0.25' });
-  // vertical & horizontal grid lines
-  for (let i = -3; i <= 5; i++) {
-    const [gx] = toSVG(i, 0);
-    gridGroup.appendChild(line(gx, 20, gx, VH - 20, { stroke: cssVar('--border'), 'stroke-width': '1' }));
-    const [, gy] = toSVG(0, i);
-    if (gy > 10 && gy < VH - 10)
-      gridGroup.appendChild(line(30, gy, VW - 30, gy, { stroke: cssVar('--border'), 'stroke-width': '1' }));
+  // ─── SVG helpers ──────────────────────────────────────────────────────────
+  const NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs = {}) {
+    const e = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+    return e;
   }
-  svg.appendChild(gridGroup);
-
-  // ── Axes ──
-  const axisColor = cssVar('--border-bright');
-  const [ox, oy] = toSVG(0, 0);
-  // x-axis
-  svg.appendChild(line(30, oy, VW - 30, oy, { stroke: axisColor, 'stroke-width': '1.5' }));
-  // y-axis
-  svg.appendChild(line(ox, 20, ox, VH - 20, { stroke: axisColor, 'stroke-width': '1.5' }));
-
-  // Axis labels
-  const axisLabelAttrs = {
-    'font-family': 'JetBrains Mono, monospace',
-    'font-size': '11',
-    fill: cssVar('--text-faint'),
-    'text-anchor': 'middle',
-  };
-  svg.appendChild(text(VW - 20, oy + 4, 'x', { ...axisLabelAttrs, 'text-anchor': 'middle' }));
-  svg.appendChild(text(ox + 14, 26, 'y', axisLabelAttrs));
-
-  // Tick marks and labels on x-axis
-  for (const [val, lbl] of [[-1, '−1'], [1, '1'], [2, '2']]) {
-    const [tx] = toSVG(val, 0);
-    svg.appendChild(line(tx, oy - 4, tx, oy + 4, { stroke: axisColor, 'stroke-width': '1' }));
-    svg.appendChild(text(tx, oy + 15, lbl, { ...axisLabelAttrs }));
+  function svgLine(x1, y1, x2, y2, a = {}) { return el('line', { x1, y1, x2, y2, ...a }); }
+  function svgCircle(cx, cy, r, a = {}) { return el('circle', { cx, cy, r, ...a }); }
+  function svgPath(d, a = {}) { return el('path', { d, ...a }); }
+  function svgText(x, y, str, a = {}) {
+    const t = el('text', { x, y, ...a }); t.textContent = str; return t;
   }
-  for (const [val, lbl] of [[-1, '−1'], [1, '1']]) {
-    const [, ty] = toSVG(0, val);
-    svg.appendChild(line(ox - 4, ty, ox + 4, ty, { stroke: axisColor, 'stroke-width': '1' }));
-    svg.appendChild(text(ox - 14, ty + 4, lbl, { ...axisLabelAttrs, 'text-anchor': 'end' }));
+  function css(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
 
-  // ── Tangent line x = 1 ──
-  const [tx1] = toSVG(1, 0);
-  const [, tyTop] = toSVG(0, tanTh2 + 0.5);
-  const [, tyBot] = toSVG(0, Math.min(tanTh, 0) - 0.4);
-  svg.appendChild(line(tx1, Math.max(10, tyTop - 20), tx1, Math.min(VH - 10, tyBot + 20), {
-    stroke: cssVar('--accent'),
-    'stroke-width': '1.5',
-    'stroke-dasharray': '5,4',
-    opacity: '0.4',
-  }));
-  svg.appendChild(text(tx1 + 8, 38, 'x = 1', {
-    'font-family': 'JetBrains Mono, monospace',
-    'font-size': '10',
-    fill: cssVar('--accent'),
-    opacity: '0.6',
-  }));
+  // ─── Core draw function (shared by both SVGs) ─────────────────────────────
+  // VW, VH = viewBox dimensions; OX, OY = origin; R = unit circle radius
+  function drawGeometry(svgEl, opts) {
+    const {
+      VW, VH, OX, OY, R,
+      theta,          // radians
+      dtheta,         // radians
+      showStep,       // 0-4: controls which elements are visible
+    } = opts;
 
-  // ── Unit circle ──
-  const [cx, cy] = toSVG(0, 0);
-  svg.appendChild(circle(cx, cy, R, {
-    fill: 'none',
-    stroke: cssVar('--accent'),
-    'stroke-width': '1.5',
-    opacity: '0.35',
-  }));
+    svgEl.innerHTML = '';
 
-  // ── Filled sector (angle between theta and theta+dtheta) ──
-  const p1x = OX + R * Math.cos(th);
-  const p1y = OY - R * Math.sin(th);
-  const p2x = OX + R * Math.cos(th2);
-  const p2y = OY - R * Math.sin(th2);
-  const sectorD = `M ${OX} ${OY} L ${p1x} ${p1y} A ${R} ${R} 0 0 0 ${p2x} ${p2y} Z`;
-  svg.appendChild(path(sectorD, {
-    fill: cssVar('--accent'),
-    opacity: '0.07',
-    stroke: 'none',
-  }));
+    const th  = theta;
+    const th2 = theta + dtheta;
+    const tanTh  = Math.tan(th);
+    const tanTh2 = Math.tan(th2);
+    const secTh  = 1 / Math.cos(th);
 
-  // ── Arc PQ (dashed highlight) ──
-  const arcD = `M ${p1x} ${p1y} A ${R} ${R} 0 0 0 ${p2x} ${p2y}`;
-  svg.appendChild(path(arcD, {
-    fill: 'none',
-    stroke: cssVar('--text-muted'),
-    'stroke-width': '2',
-    'stroke-dasharray': '4,3',
-    opacity: '0.7',
-  }));
+    const toX = (x) => OX + x * R;
+    const toY = (y) => OY - y * R;
 
-  // Arc length label
-  const arcMidAngle = (th + th2) / 2;
-  const arcLabelR = R + 18;
-  const alx = OX + arcLabelR * Math.cos(arcMidAngle);
-  const aly = OY - arcLabelR * Math.sin(arcMidAngle);
-  svg.appendChild(text(alx, aly, 'Δθ (rad)', {
-    'font-family': 'JetBrains Mono, monospace',
-    'font-size': '10',
-    fill: cssVar('--text-muted'),
-    'text-anchor': 'middle',
-    opacity: '0.8',
-  }));
-
-  // ── Radial ray 1 (theta) ──
-  const [rx1e, ry1e] = toSVG(Math.cos(th) * 1.02, Math.sin(th) * 1.02);
-  svg.appendChild(line(ox, oy, rx1e, ry1e, {
-    stroke: cssVar('--accent'),
-    'stroke-width': '2',
-    'stroke-linecap': 'round',
-  }));
-
-  // ── Radial ray 2 (theta + dtheta) ──
-  const [rx2e, ry2e] = toSVG(Math.cos(th2) * 1.02, Math.sin(th2) * 1.02);
-  svg.appendChild(line(ox, oy, rx2e, ry2e, {
-    stroke: cssVar('--green'),
-    'stroke-width': '2',
-    'stroke-linecap': 'round',
-    'stroke-dasharray': dtheta < 3 ? 'none' : '6,3',
-  }));
-
-  // ── Point P on circle ──
-  const [Px, Py] = toSVG(Math.cos(th), Math.sin(th));
-  svg.appendChild(circle(Px, Py, 4, { fill: cssVar('--accent'), stroke: cssVar('--bg'), 'stroke-width': '2' }));
-  svg.appendChild(text(Px - 14, Py - 8, 'P', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--accent'), 'font-weight': '600',
-  }));
-
-  // ── Point Q on circle ──
-  const [Qx, Qy] = toSVG(Math.cos(th2), Math.sin(th2));
-  svg.appendChild(circle(Qx, Qy, 4, { fill: cssVar('--green'), stroke: cssVar('--bg'), 'stroke-width': '2' }));
-  svg.appendChild(text(Qx + 6, Qy - 8, 'Q', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--green'), 'font-weight': '600',
-  }));
-
-  // ── tan(θ) segment on x=1 line ──
-  const [tanBase] = toSVG(1, 0);
-  const [, tanTopY] = toSVG(0, tanTh);
-  const [, tanBase2Y] = toSVG(0, 0);
-  svg.appendChild(line(tanBase, tanBase2Y, tanBase, tanTopY, {
-    stroke: cssVar('--gold'),
-    'stroke-width': '4',
-    'stroke-linecap': 'round',
-    opacity: '0.9',
-  }));
-  // tan(θ) endpoint
-  const [tanPtX, tanPtY] = toSVG(1, tanTh);
-  svg.appendChild(circle(tanPtX, tanPtY, 4.5, { fill: cssVar('--gold'), stroke: cssVar('--bg'), 'stroke-width': '2' }));
-
-  // ── tan(θ+Δθ) segment ──
-  const [, tanTop2Y] = toSVG(0, tanTh2);
-  svg.appendChild(line(tanBase, tanTopY, tanBase, tanTop2Y, {
-    stroke: cssVar('--red'),
-    'stroke-width': '4',
-    'stroke-linecap': 'round',
-    opacity: '0.9',
-  }));
-  const [tanPt2X, tanPt2Y] = toSVG(1, tanTh2);
-  svg.appendChild(circle(tanPt2X, tanPt2Y, 4.5, { fill: cssVar('--green'), stroke: cssVar('--bg'), 'stroke-width': '2' }));
-
-  // ── Labels on tangent line ──
-  const labelOffset = tanTh > 0 ? -6 : 14;
-  svg.appendChild(text(tanPtX + 8, tanPtY + 4, 'tan θ', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--gold'), 'font-weight': '600',
-  }));
-  svg.appendChild(text(tanPt2X + 8, tanPt2Y + 4, 'tan(θ+Δθ)', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
-    fill: cssVar('--green'), 'font-weight': '600',
-  }));
-
-  // ── Δtan brace ──
-  const braceX = tanBase + 26;
-  const [, midDtanY] = toSVG(0, (tanTh + tanTh2) / 2);
-  svg.appendChild(line(braceX - 2, tanTopY, braceX - 2, tanTop2Y, {
-    stroke: cssVar('--red'),
-    'stroke-width': '2',
-    opacity: '0.8',
-  }));
-  svg.appendChild(text(braceX + 4, midDtanY + 4, 'Δtan', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--red'), 'font-weight': '600',
-  }));
-
-  // ── Large right triangle (origin, base of tangent, tan point) ──
-  const [origX, origY] = toSVG(0, 0);
-  const [tanBaseX, tanBaseY] = toSVG(1, 0);
-  // Right angle mark
-  const raSz = 8;
-  const raPath = `M ${tanBaseX - raSz} ${tanBaseY} L ${tanBaseX - raSz} ${tanBaseY - raSz} L ${tanBaseX} ${tanBaseY - raSz}`;
-  svg.appendChild(path(raPath, { fill: 'none', stroke: cssVar('--accent'), 'stroke-width': '1', opacity: '0.5' }));
-
-  // Hypotenuse (origin to tan point) = secant
-  svg.appendChild(line(origX, origY, tanPtX, tanPtY, {
-    stroke: cssVar('--purple'),
-    'stroke-width': '1.5',
-    'stroke-dasharray': '6,3',
-    opacity: '0.6',
-  }));
-  // Hypotenuse label (sec θ)
-  const hypMidX = (origX + tanPtX) / 2 - 20;
-  const hypMidY = (origY + tanPtY) / 2;
-  svg.appendChild(text(hypMidX - 2, hypMidY, 'sec θ', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
-    fill: cssVar('--purple'), opacity: '0.8',
-    'text-anchor': 'end',
-  }));
-
-  // ── Similar triangle at P (key proof element) ──
-  // The small triangle at P: vertices are P, a point along the chord PQ, and
-  // a point perpendicular to the radius.
-  // The chord PQ direction is approximately perpendicular to OP.
-  // We draw a small right triangle at P showing the similarity.
-  if (dtheta > 1.5) {
-    // The tangent direction at P is (-sin θ, cos θ)
-    const tx_ = -Math.sin(th), ty_ = Math.cos(th);
-    // The radial direction at P is (cos θ, sin θ)
-    const rx_ = Math.cos(th), ry_ = Math.sin(th);
-
-    // Small triangle in SVG coords
-    const triScale = R * dth * 0.8;  // scale to match Δθ
-    const tP  = [Px, Py];
-    const tQ  = [Px + tx_ * triScale, Py - ty_ * triScale];
-    const tR  = [Px + rx_ * triScale, Py - ry_ * triScale];
-
-    const triD = `M ${tP[0]} ${tP[1]} L ${tQ[0]} ${tQ[1]} L ${tR[0]} ${tR[1]} Z`;
-    svg.appendChild(path(triD, {
-      fill: cssVar('--purple'),
-      opacity: '0.18',
-      stroke: cssVar('--purple'),
-      'stroke-width': '1.5',
-      'stroke-opacity': '0.6',
-    }));
-
-    // Right angle at P in small triangle
-    const ra2Sz = 6;
-    const ra2D = `M ${tP[0] + tx_ * ra2Sz} ${tP[1] - ty_ * ra2Sz} L ${tP[0] + tx_ * ra2Sz + rx_ * ra2Sz} ${tP[1] - ty_ * ra2Sz - ry_ * ra2Sz} L ${tP[0] + rx_ * ra2Sz} ${tP[1] - ry_ * ra2Sz}`;
-    svg.appendChild(path(ra2D, { fill: 'none', stroke: cssVar('--purple'), 'stroke-width': '1', opacity: '0.7' }));
-
-    // Label "≅" between small and large triangles
-    svg.appendChild(text((tP[0] + tQ[0]) / 2 - 28, (tP[1] + tQ[1]) / 2 - 12, '∼', {
-      'font-family': 'JetBrains Mono, monospace', 'font-size': '14',
-      fill: cssVar('--purple'), opacity: '0.7', 'font-weight': '600',
-    }));
-  }
-
-  // ── Angle arc for θ ──
-  const arcR2 = 38;
-  const thetaArcD = `M ${OX + arcR2} ${OY} A ${arcR2} ${arcR2} 0 0 0 ${OX + arcR2 * Math.cos(th)} ${OY - arcR2 * Math.sin(th)}`;
-  svg.appendChild(path(thetaArcD, {
-    fill: 'none',
-    stroke: cssVar('--accent'),
-    'stroke-width': '1.5',
-    opacity: '0.6',
-  }));
-  // θ label
-  const thetaLabelAngle = th / 2;
-  const tlx = OX + 52 * Math.cos(thetaLabelAngle);
-  const tly = OY - 52 * Math.sin(thetaLabelAngle);
-  svg.appendChild(text(tlx, tly + 4, 'θ', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '13',
-    fill: cssVar('--accent'), 'font-weight': '600', 'text-anchor': 'middle',
-  }));
-
-  // ── Angle arc for Δθ ──
-  const arcR3 = 48;
-  const dthetaArcD = `M ${OX + arcR3 * Math.cos(th)} ${OY - arcR3 * Math.sin(th)} A ${arcR3} ${arcR3} 0 0 0 ${OX + arcR3 * Math.cos(th2)} ${OY - arcR3 * Math.sin(th2)}`;
-  svg.appendChild(path(dthetaArcD, {
-    fill: 'none',
-    stroke: cssVar('--green'),
-    'stroke-width': '1.5',
-    opacity: '0.7',
-  }));
-  const dthetaLabelAngle = (th + th2) / 2;
-  const dtlx = OX + 62 * Math.cos(dthetaLabelAngle);
-  const dtly = OY - 62 * Math.sin(dthetaLabelAngle);
-  svg.appendChild(text(dtlx, dtly + 4, 'Δθ', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--green'), 'font-weight': '600', 'text-anchor': 'middle',
-  }));
-
-  // ── Origin dot ──
-  svg.appendChild(circle(OX, OY, 3.5, { fill: cssVar('--text-muted') }));
-  svg.appendChild(text(OX - 12, OY + 14, 'O', {
-    'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
-    fill: cssVar('--text-muted'),
-  }));
-
-  // ── Horizontal line from P to tangent line (shows 1 unit base) ──
-  svg.appendChild(line(Px, Py, tanPtX, Py, {
-    stroke: cssVar('--accent'),
-    'stroke-width': '1',
-    'stroke-dasharray': '3,3',
-    opacity: '0.4',
-  }));
-
-  // ── Derivative formula watermark ──
-  const formulaY = VH - 20;
-  svg.appendChild(text(VW / 2, formulaY, 'd/dθ [tan θ] = sec²θ = 1 + tan²θ', {
-    'font-family': 'JetBrains Mono, monospace',
-    'font-size': '12',
-    fill: cssVar('--text-faint'),
-    'text-anchor': 'middle',
-    opacity: '0.7',
-  }));
-
-  // ── Update live panel ──
-  updateLiveValues(th, dth, tanTh, tanTh2, secTh);
-}
-
-// ─── Live values ─────────────────────────────────────────────────────────────
-function updateLiveValues(th, dth, tanTh, tanTh2, secTh) {
-  const ratio = dth > 0 ? (tanTh2 - tanTh) / dth : NaN;
-  const deriv = secTh * secTh;
-
-  document.getElementById('rv-theta').textContent  = (th * 180 / Math.PI).toFixed(1) + '°';
-  document.getElementById('rv-tan').textContent    = tanTh.toFixed(4);
-  document.getElementById('rv-dtheta').textContent = (dth * 180 / Math.PI).toFixed(1) + '°';
-  document.getElementById('rv-ratio').textContent  = isFinite(ratio) ? ratio.toFixed(4) : '—';
-  document.getElementById('rv-deriv').textContent  = deriv.toFixed(4);
-  document.getElementById('rv-sec2').textContent   = deriv.toFixed(4);
-
-  // Color the ratio to show convergence
-  const ratioEl = document.getElementById('rv-ratio');
-  const convBar  = document.getElementById('conv-bar');
-  const convPct  = document.getElementById('conv-pct');
-  const convNote = document.getElementById('conv-note');
-  if (isFinite(ratio)) {
-    const err = Math.abs(ratio - deriv);
-    const relErr = deriv > 0 ? err / deriv : 0;
-    // pct = 100 means perfect convergence
-    const pct = Math.max(0, Math.min(100, (1 - relErr) * 100));
-    convBar.style.width = pct + '%';
-    convPct.textContent = pct.toFixed(0) + '%';
-    if (err < 0.005) {
-      ratioEl.className = 'result-value green';
-      convNote.textContent = '✓ Essentially equal — limit reached!';
-    } else if (err < 0.05) {
-      ratioEl.className = 'result-value gold';
-      convNote.textContent = 'Getting close — try shrinking Δθ more';
-    } else {
-      ratioEl.className = 'result-value red';
-      convNote.textContent = 'Shrink Δθ to watch convergence';
+    // ── Grid ──
+    const gridG = el('g', { opacity: '0.18' });
+    for (let i = -3; i <= 5; i++) {
+      gridG.appendChild(svgLine(toX(i), 10, toX(i), VH - 10, { stroke: css('--border'), 'stroke-width': '1' }));
+      const gy = toY(i);
+      if (gy > 10 && gy < VH - 10)
+        gridG.appendChild(svgLine(20, gy, VW - 20, gy, { stroke: css('--border'), 'stroke-width': '1' }));
     }
-  } else {
-    convBar.style.width = '0%';
-    convPct.textContent = '—';
-    convNote.textContent = 'Shrink Δθ to see convergence';
+    svgEl.appendChild(gridG);
+
+    // ── Axes ──
+    const ax = css('--border-hi');
+    svgEl.appendChild(svgLine(20, toY(0), VW - 20, toY(0), { stroke: ax, 'stroke-width': '1.5' }));
+    svgEl.appendChild(svgLine(toX(0), 10, toX(0), VH - 10, { stroke: ax, 'stroke-width': '1.5' }));
+    const lf = { 'font-family': 'JetBrains Mono, monospace', 'font-size': '10', fill: css('--text-faint'), 'text-anchor': 'middle' };
+    for (const [v, lbl] of [[-1,'−1'],[1,'1'],[2,'2']]) {
+      svgEl.appendChild(svgLine(toX(v), toY(0)-3, toX(v), toY(0)+3, { stroke: ax, 'stroke-width': '1' }));
+      svgEl.appendChild(svgText(toX(v), toY(0)+12, lbl, lf));
+    }
+    for (const [v, lbl] of [[-1,'−1'],[1,'1']]) {
+      const gy = toY(v);
+      svgEl.appendChild(svgLine(toX(0)-3, gy, toX(0)+3, gy, { stroke: ax, 'stroke-width': '1' }));
+      svgEl.appendChild(svgText(toX(0)-10, gy+4, lbl, { ...lf, 'text-anchor': 'end' }));
+    }
+    svgEl.appendChild(svgText(VW - 14, toY(0)+3, 'x', lf));
+    svgEl.appendChild(svgText(toX(0)+10, 18, 'y', lf));
+
+    // ── Tangent line x=1 (step 0+) ──
+    const tx1 = toX(1);
+    const tanMax = Math.max(Math.abs(tanTh), Math.abs(tanTh2));
+    const tyTop = toY(tanMax + 0.4);
+    const tyBot = toY(-0.2);
+    svgEl.appendChild(svgLine(tx1, Math.max(8, tyTop - 10), tx1, Math.min(VH - 8, tyBot + 10), {
+      stroke: css('--accent'), 'stroke-width': '1.5', 'stroke-dasharray': '5,4', opacity: '0.35',
+    }));
+    svgEl.appendChild(svgText(tx1 + 5, 24, 'x = 1', {
+      'font-family': 'JetBrains Mono, monospace', 'font-size': '9',
+      fill: css('--accent'), opacity: '0.55',
+    }));
+
+    // ── Unit circle ──
+    svgEl.appendChild(svgCircle(toX(0), toY(0), R, {
+      fill: 'none', stroke: css('--accent'), 'stroke-width': '1.5', opacity: '0.3',
+    }));
+
+    // ── Sector fill ── (step 1+)
+    if (showStep >= 1) {
+      const p1x = OX + R * Math.cos(th), p1y = OY - R * Math.sin(th);
+      const p2x = OX + R * Math.cos(th2), p2y = OY - R * Math.sin(th2);
+      const sd = `M ${OX} ${OY} L ${p1x} ${p1y} A ${R} ${R} 0 0 0 ${p2x} ${p2y} Z`;
+      svgEl.appendChild(svgPath(sd, { fill: css('--accent'), opacity: '0.07', stroke: 'none' }));
+    }
+
+    // ── Arc PQ (step 2+) ──
+    if (showStep >= 2) {
+      const p1x = OX + R * Math.cos(th), p1y = OY - R * Math.sin(th);
+      const p2x = OX + R * Math.cos(th2), p2y = OY - R * Math.sin(th2);
+      svgEl.appendChild(svgPath(`M ${p1x} ${p1y} A ${R} ${R} 0 0 0 ${p2x} ${p2y}`, {
+        fill: 'none', stroke: css('--text-muted'), 'stroke-width': '2.5', 'stroke-dasharray': '4,3', opacity: '0.8',
+      }));
+      const arcMid = (th + th2) / 2;
+      const alr = R + 22;
+      svgEl.appendChild(svgText(OX + alr * Math.cos(arcMid), OY - alr * Math.sin(arcMid), 'Δθ', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
+        fill: css('--text-muted'), 'text-anchor': 'middle', opacity: '0.8',
+      }));
+    }
+
+    // ── Radial ray 1 (theta) ──
+    const Px = OX + R * Math.cos(th), Py = OY - R * Math.sin(th);
+    svgEl.appendChild(svgLine(OX, OY, OX + R * 1.02 * Math.cos(th), OY - R * 1.02 * Math.sin(th), {
+      stroke: css('--accent'), 'stroke-width': '2', 'stroke-linecap': 'round',
+    }));
+
+    // ── Radial ray 2 (theta+dtheta) — step 1+ ──
+    if (showStep >= 1) {
+      const Qxe = OX + R * 1.02 * Math.cos(th2), Qye = OY - R * 1.02 * Math.sin(th2);
+      svgEl.appendChild(svgLine(OX, OY, Qxe, Qye, {
+        stroke: css('--green'), 'stroke-width': '2', 'stroke-linecap': 'round',
+        'stroke-dasharray': dtheta * 180 / Math.PI < 5 ? 'none' : '6,3',
+      }));
+    }
+
+    // ── tan(θ) segment on x=1 (step 0+) ──
+    svgEl.appendChild(svgLine(tx1, toY(0), tx1, toY(tanTh), {
+      stroke: css('--gold'), 'stroke-width': '4', 'stroke-linecap': 'round', opacity: '0.9',
+    }));
+    const tanPtY = toY(tanTh);
+    svgEl.appendChild(svgCircle(tx1, tanPtY, 4.5, { fill: css('--gold'), stroke: css('--bg'), 'stroke-width': '2' }));
+    svgEl.appendChild(svgText(tx1 + 7, tanPtY + 4, 'tan θ', {
+      'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
+      fill: css('--gold'), 'font-weight': '600',
+    }));
+
+    // ── Δtan segment (step 1+) ──
+    if (showStep >= 1) {
+      const tanPt2Y = toY(tanTh2);
+      svgEl.appendChild(svgLine(tx1, tanPtY, tx1, tanPt2Y, {
+        stroke: css('--red'), 'stroke-width': '4', 'stroke-linecap': 'round', opacity: '0.9',
+      }));
+      svgEl.appendChild(svgCircle(tx1, tanPt2Y, 4.5, { fill: css('--green'), stroke: css('--bg'), 'stroke-width': '2' }));
+      svgEl.appendChild(svgText(tx1 + 7, tanPt2Y + 4, 'tan(θ+Δθ)', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '9',
+        fill: css('--green'), 'font-weight': '600',
+      }));
+      // Δtan label
+      const midDY = (tanPtY + tanPt2Y) / 2;
+      const bx = tx1 + 28;
+      svgEl.appendChild(svgLine(bx - 2, tanPtY, bx - 2, tanPt2Y, {
+        stroke: css('--red'), 'stroke-width': '1.5', opacity: '0.8',
+      }));
+      svgEl.appendChild(svgText(bx + 3, midDY + 4, 'Δtan', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
+        fill: css('--red'), 'font-weight': '600',
+      }));
+    }
+
+    // ── Secant hypotenuse (step 3+) ──
+    if (showStep >= 3) {
+      svgEl.appendChild(svgLine(OX, OY, tx1, tanPtY, {
+        stroke: css('--purple'), 'stroke-width': '1.5', 'stroke-dasharray': '6,3', opacity: '0.65',
+      }));
+      // Right angle mark at (1, 0)
+      const rSz = 7;
+      svgEl.appendChild(svgPath(
+        `M ${tx1 - rSz} ${toY(0)} L ${tx1 - rSz} ${toY(0) - rSz} L ${tx1} ${toY(0) - rSz}`,
+        { fill: 'none', stroke: css('--accent'), 'stroke-width': '1', opacity: '0.45' }
+      ));
+      // sec θ label perpendicular to hypotenuse
+      const hDx = tx1 - OX, hDy = tanPtY - OY;
+      const hLen = Math.sqrt(hDx*hDx + hDy*hDy);
+      const pX = -hDy / hLen * 14, pY = hDx / hLen * 14;
+      svgEl.appendChild(svgText((OX + tx1)/2 + pX, (OY + tanPtY)/2 + pY + 4, 'sec θ', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '10',
+        fill: css('--purple'), opacity: '0.8', 'text-anchor': 'middle',
+      }));
+    }
+
+    // ── Similar triangle at P (step 3+) ──
+    if (showStep >= 3 && dtheta * 180 / Math.PI > 1.5) {
+      const txDir = -Math.sin(th), tyDir = Math.cos(th);
+      const rxDir = Math.cos(th), ryDir = Math.sin(th);
+      const triScale = R * dtheta * 0.75;
+      const tQ = [Px + txDir * triScale, Py - tyDir * triScale];
+      const tR = [Px + rxDir * triScale, Py - ryDir * triScale];
+      svgEl.appendChild(svgPath(
+        `M ${Px} ${Py} L ${tQ[0]} ${tQ[1]} L ${tR[0]} ${tR[1]} Z`,
+        { fill: css('--purple'), opacity: '0.17', stroke: css('--purple'), 'stroke-width': '1.5', 'stroke-opacity': '0.6' }
+      ));
+      // ~ label
+      svgEl.appendChild(svgText((Px + tQ[0]) / 2 - 24, (Py + tQ[1]) / 2 - 8, '∼', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '13',
+        fill: css('--purple'), opacity: '0.75', 'font-weight': '600',
+      }));
+    }
+
+    // ── θ arc ──
+    const arcR2 = 34;
+    svgEl.appendChild(svgPath(
+      `M ${OX + arcR2} ${OY} A ${arcR2} ${arcR2} 0 0 0 ${OX + arcR2 * Math.cos(th)} ${OY - arcR2 * Math.sin(th)}`,
+      { fill: 'none', stroke: css('--accent'), 'stroke-width': '1.5', opacity: '0.6' }
+    ));
+    svgEl.appendChild(svgText(
+      OX + 48 * Math.cos(th / 2), OY - 48 * Math.sin(th / 2) + 4, 'θ',
+      { 'font-family': 'JetBrains Mono, monospace', 'font-size': '12', fill: css('--accent'), 'font-weight': '600', 'text-anchor': 'middle' }
+    ));
+
+    // ── Δθ arc (step 1+) ──
+    if (showStep >= 1) {
+      const arcR3 = 44;
+      svgEl.appendChild(svgPath(
+        `M ${OX + arcR3 * Math.cos(th)} ${OY - arcR3 * Math.sin(th)} A ${arcR3} ${arcR3} 0 0 0 ${OX + arcR3 * Math.cos(th2)} ${OY - arcR3 * Math.sin(th2)}`,
+        { fill: 'none', stroke: css('--green'), 'stroke-width': '1.5', opacity: '0.7' }
+      ));
+      const dm = (th + th2) / 2;
+      svgEl.appendChild(svgText(OX + 58 * Math.cos(dm), OY - 58 * Math.sin(dm) + 4, 'Δθ', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '10', fill: css('--green'), 'font-weight': '600', 'text-anchor': 'middle',
+      }));
+    }
+
+    // ── Points P and Q ──
+    svgEl.appendChild(svgCircle(Px, Py, 4, { fill: css('--accent'), stroke: css('--bg'), 'stroke-width': '2' }));
+    svgEl.appendChild(svgText(Px + Math.cos(th) * 14, Py - Math.sin(th) * 14, 'P', {
+      'font-family': 'JetBrains Mono, monospace', 'font-size': '11', fill: css('--accent'), 'font-weight': '600',
+    }));
+    if (showStep >= 1) {
+      const Qx = OX + R * Math.cos(th2), Qy = OY - R * Math.sin(th2);
+      svgEl.appendChild(svgCircle(Qx, Qy, 4, { fill: css('--green'), stroke: css('--bg'), 'stroke-width': '2' }));
+      svgEl.appendChild(svgText(Qx + Math.cos(th2) * 14, Qy - Math.sin(th2) * 14, 'Q', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '11', fill: css('--green'), 'font-weight': '600',
+      }));
+    }
+
+    // ── Origin dot ──
+    svgEl.appendChild(svgCircle(OX, OY, 3.5, { fill: css('--text-muted') }));
+    svgEl.appendChild(svgText(OX - 10, OY + 12, 'O', {
+      'font-family': 'JetBrains Mono, monospace', 'font-size': '10', fill: css('--text-muted'),
+    }));
+
+    // ── Horizontal dash from P to tangent line ──
+    svgEl.appendChild(svgLine(Px, Py, tx1, Py, {
+      stroke: css('--accent'), 'stroke-width': '1', 'stroke-dasharray': '3,3', opacity: '0.35',
+    }));
+
+    // ── Formula watermark (step 4) ──
+    if (showStep >= 4) {
+      svgEl.appendChild(svgText(VW / 2, VH - 12, 'd/dθ [tan θ] = sec²θ = 1 + tan²θ', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
+        fill: css('--text-faint'), 'text-anchor': 'middle', opacity: '0.75',
+      }));
+    }
   }
-}
 
-// ─── Sliders ─────────────────────────────────────────────────────────────────
-const thetaSlider  = document.getElementById('theta-slider');
-const dthetaSlider = document.getElementById('dtheta-slider');
-const thetaVal     = document.getElementById('theta-val');
-const dthetaVal    = document.getElementById('dtheta-val');
+  // ══════════════════════════════════════════════════════════════════════════
+  // EXPLORER (main interactive canvas)
+  // ══════════════════════════════════════════════════════════════════════════
+  const mainSvg = document.getElementById('main-svg');
+  let theta = 35;    // degrees
+  let dtheta = 20;   // degrees
+  let animating = false;
+  let animRaf = null;
+  let animDir = -1;
+  let animLiveDtheta = null;
 
-thetaSlider.addEventListener('input', () => {
-  theta = +thetaSlider.value;
-  thetaVal.textContent = theta + '°';
-  // Clamp dtheta so we don't exceed 80°
-  if (theta + dtheta > 80) {
-    dtheta = 80 - theta;
-    dthetaSlider.value = dtheta;
-    dthetaVal.textContent = dtheta + '°';
+  const MAIN_OPTS = {
+    VW: 560, VH: 480, OX: 175, OY: 260, R: 120,
+  };
+
+  function renderMain() {
+    const th  = theta  * Math.PI / 180;
+    const dth = dtheta * Math.PI / 180;
+    const tanTh  = Math.tan(th);
+    const tanTh2 = Math.tan(th + dth);
+    const secTh  = 1 / Math.cos(th);
+    const deriv  = secTh * secTh;
+    const ratio  = dth > 0 ? (tanTh2 - tanTh) / dth : NaN;
+
+    drawGeometry(mainSvg, {
+      ...MAIN_OPTS,
+      theta: th,
+      dtheta: dth,
+      showStep: 4,   // Explorer always shows everything
+    });
+
+    // Live values
+    document.getElementById('rv-theta').textContent  = (theta).toFixed(1) + '°';
+    document.getElementById('rv-tan').textContent    = tanTh.toFixed(4);
+    document.getElementById('rv-dtheta').textContent = dtheta.toFixed(1) + '°';
+    document.getElementById('rv-ratio').textContent  = isFinite(ratio) ? ratio.toFixed(4) : '—';
+    document.getElementById('rv-deriv').textContent  = deriv.toFixed(4);
+    document.getElementById('rv-sec2').textContent   = deriv.toFixed(4);
+
+    // Convergence
+    const ratioEl   = document.getElementById('rv-ratio');
+    const convBar   = document.getElementById('conv-bar');
+    const convPct   = document.getElementById('conv-pct');
+    const convNote  = document.getElementById('conv-note');
+    if (isFinite(ratio) && deriv > 0) {
+      const relErr = Math.abs(ratio - deriv) / deriv;
+      const pct    = Math.max(0, Math.min(100, Math.round(100 * Math.exp(-2.5 * relErr))));
+      convBar.style.width = pct + '%';
+      convPct.textContent = pct + '%';
+      if (relErr < 0.005) {
+        ratioEl.className = 'lv-val c-green';
+        convNote.textContent = '✓ Essentially equal — limit reached!';
+      } else if (relErr < 0.05) {
+        ratioEl.className = 'lv-val c-gold';
+        convNote.textContent = 'Very close (±' + (relErr * 100).toFixed(1) + '%) — shrink Δθ further';
+      } else {
+        ratioEl.className = 'lv-val c-red';
+        convNote.textContent = 'Error ' + (relErr * 100).toFixed(0) + '% — shrink Δθ to converge';
+      }
+    } else {
+      convBar.style.width = '0%';
+      convPct.textContent = '—';
+      convNote.textContent = 'Shrink Δθ to see convergence';
+    }
   }
-  render();
-  highlightStep(autoStep());
-});
 
-dthetaSlider.addEventListener('input', () => {
-  dtheta = +dthetaSlider.value;
-  // Clamp
-  if (theta + dtheta > 80) {
-    dtheta = 80 - theta;
-    dthetaSlider.value = dtheta;
-  }
-  dthetaVal.textContent = dtheta + '°';
-  render();
-  highlightStep(autoStep());
-});
+  // Sliders
+  const thetaSlider  = document.getElementById('theta-slider');
+  const dthetaSlider = document.getElementById('dtheta-slider');
 
-// ─── Auto-highlight step based on Δθ size ────────────────────────────────────
-function autoStep() {
-  if (dtheta > 25) return 1;
-  if (dtheta > 12) return 2;
-  if (dtheta > 5)  return 3;
-  if (dtheta > 2)  return 4;
-  return 4;
-}
-
-// ─── Step cards ──────────────────────────────────────────────────────────────
-function highlightStep(idx) {
-  document.querySelectorAll('.step-card').forEach((card, i) => {
-    card.classList.toggle('active', i === idx);
+  thetaSlider.addEventListener('input', () => {
+    theta = +thetaSlider.value;
+    document.getElementById('theta-val').textContent = theta + '°';
+    if (theta + dtheta > 80) {
+      dtheta = 80 - theta;
+      dthetaSlider.value = dtheta;
+      document.getElementById('dtheta-val').textContent = dtheta.toFixed(0) + '°';
+    }
+    renderMain();
   });
-}
+  dthetaSlider.addEventListener('input', () => {
+    dtheta = Math.min(+dthetaSlider.value, 80 - theta);
+    dthetaSlider.value = dtheta;
+    document.getElementById('dtheta-val').textContent = dtheta.toFixed(0) + '°';
+    renderMain();
+  });
 
-document.querySelectorAll('.step-card').forEach((card, i) => {
-  card.addEventListener('click', () => highlightStep(i));
-});
+  // Animate
+  const animBtn = document.getElementById('animate-btn');
+  function startAnim() {
+    if (animating) return;
+    animating = true; animDir = -1; animLiveDtheta = dtheta;
+    animBtn.textContent = 'Stop'; animBtn.classList.add('animating');
+    loop();
+  }
+  function stopAnim() {
+    animating = false;
+    if (animRaf) cancelAnimationFrame(animRaf);
+    animBtn.textContent = 'Animate Limit'; animBtn.classList.remove('animating');
+  }
+  function loop() {
+    if (!animating) return;
+    animLiveDtheta += animDir * 0.35;
+    if (animLiveDtheta < 0.8) { animLiveDtheta = 0.8; animDir = 1; }
+    else if (animLiveDtheta > dtheta) { animLiveDtheta = dtheta; animDir = -1; }
+    dthetaSlider.value = animLiveDtheta;
+    document.getElementById('dtheta-val').textContent = animLiveDtheta.toFixed(1) + '°';
+    const saved = dtheta;
+    dtheta = animLiveDtheta;
+    renderMain();
+    dtheta = saved;
+    animRaf = requestAnimationFrame(loop);
+  }
+  animBtn.addEventListener('click', () => { animating ? stopAnim() : startAnim(); });
 
-// ─── Animate limit ────────────────────────────────────────────────────────────
-let animDir = -1;  // shrinking
-let animDtheta = null;
-const animBtn = document.getElementById('animate-btn');
+  // Reset
+  document.getElementById('reset-btn').addEventListener('click', () => {
+    stopAnim();
+    theta = 35; dtheta = 20;
+    thetaSlider.value = theta; document.getElementById('theta-val').textContent = theta + '°';
+    dthetaSlider.value = dtheta; document.getElementById('dtheta-val').textContent = dtheta + '°';
+    renderMain();
+  });
 
-function startAnimation() {
-  if (animating) return;
-  animating = true;
-  animDir = -1;
-  animDtheta = dtheta;
-  animBtn.textContent = 'Stop';
-  animBtn.classList.add('animating');
-  animLoop();
-}
+  // ══════════════════════════════════════════════════════════════════════════
+  // NARRATIVE (scroll-driven sticky canvas)
+  // ══════════════════════════════════════════════════════════════════════════
+  const narrSvg     = document.getElementById('narr-svg');
+  const narrSteps   = document.querySelectorAll('.nstep');
+  const narrPips    = document.querySelectorAll('.narr-pip');
+  const narrLabel   = document.getElementById('narr-step-label');
+  let currentNarrStep = 0;
 
-function stopAnimation() {
-  animating = false;
-  if (animRaf) cancelAnimationFrame(animRaf);
-  animBtn.textContent = 'Animate Limit';
-  animBtn.classList.remove('animating');
-}
+  // Δθ target for each step (degrees)
+  const stepDtheta = [0, 22, 18, 14, 2];
+  const stepTheta  = [35, 35, 35, 35, 35];  // keep theta stable during scroll
+  const stepLabels = [
+    '<strong>01</strong> Unit circle &amp; tangent line',
+    '<strong>02</strong> Second ray at θ + Δθ',
+    '<strong>03</strong> Arc PQ ≈ Δθ on the circle',
+    '<strong>04</strong> Similar triangles — sec θ',
+    '<strong>05</strong> Limit: Δθ → 0 → sec²(θ)',
+  ];
 
-function animLoop() {
-  if (!animating) return;
+  // Animated transition for narrative Δθ
+  let narrDtheta = 0;
+  let narrTargetDtheta = 0;
+  let narrAnimRaf = null;
 
-  animDtheta += animDir * 0.4;
-
-  if (animDtheta < 1) {
-    animDtheta = 1;
-    animDir = 1;
-  } else if (animDtheta > dtheta) {
-    animDtheta = dtheta;
-    animDir = -1;
+  function animateNarrTo(targetDeg) {
+    narrTargetDtheta = targetDeg;
+    if (narrAnimRaf) cancelAnimationFrame(narrAnimRaf);
+    function tick() {
+      const diff = narrTargetDtheta - narrDtheta;
+      if (Math.abs(diff) < 0.15) {
+        narrDtheta = narrTargetDtheta;
+        renderNarr();
+        return;
+      }
+      narrDtheta += diff * 0.12;
+      renderNarr();
+      narrAnimRaf = requestAnimationFrame(tick);
+    }
+    tick();
   }
 
-  // Update slider display without triggering our listener
-  dthetaSlider.value = animDtheta;
-  dthetaVal.textContent = animDtheta.toFixed(1) + '°';
+  function renderNarr() {
+    const th  = stepTheta[currentNarrStep]  * Math.PI / 180;
+    const dth = narrDtheta * Math.PI / 180;
+    drawGeometry(narrSvg, {
+      VW: 420, VH: 420, OX: 155, OY: 230, R: 110,
+      theta: th,
+      dtheta: Math.max(dth, 0.001),
+      showStep: currentNarrStep,
+    });
+  }
 
-  const savedDtheta = dtheta;
-  dtheta = animDtheta;
-  render();
-  highlightStep(autoStep());
-  dtheta = savedDtheta;
+  function activateNarrStep(idx) {
+    if (idx === currentNarrStep) return;
+    currentNarrStep = idx;
 
-  animRaf = requestAnimationFrame(animLoop);
-}
+    // Update step opacity
+    narrSteps.forEach((s, i) => s.classList.toggle('is-active', i === idx));
 
-animBtn.addEventListener('click', () => {
-  if (animating) stopAnimation(); else startAnimation();
-});
+    // Update pips
+    narrPips.forEach((p, i) => p.classList.toggle('active', i === idx));
 
-// ─── Reset ───────────────────────────────────────────────────────────────────
-document.getElementById('reset-btn').addEventListener('click', () => {
-  stopAnimation();
-  theta = 35; dtheta = 20;
-  thetaSlider.value = theta; thetaVal.textContent = theta + '°';
-  dthetaSlider.value = dtheta; dthetaVal.textContent = dtheta + '°';
-  render();
-  highlightStep(0);
-});
+    // Update label
+    narrLabel.innerHTML = stepLabels[idx];
 
-// ─── Dark mode toggle ─────────────────────────────────────────────────────────
-(function () {
-  const toggle = document.querySelector('[data-theme-toggle]');
-  const root   = document.documentElement;
-  let dark = true;
-  root.setAttribute('data-theme', 'dark');
+    // Animate Δθ
+    animateNarrTo(stepDtheta[idx]);
+  }
 
-  toggle && toggle.addEventListener('click', () => {
-    dark = !dark;
-    root.setAttribute('data-theme', dark ? 'dark' : 'light');
-    toggle.setAttribute('aria-label', 'Switch to ' + (dark ? 'light' : 'dark') + ' mode');
-    toggle.innerHTML = dark
-      ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
-      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
-    // Re-render with new colors
-    setTimeout(render, 50);
+  // IntersectionObserver for scroll activation
+  const observer = new IntersectionObserver((entries) => {
+    // Find the most visible step
+    let best = -1, bestRatio = 0;
+    entries.forEach(e => {
+      if (e.intersectionRatio > bestRatio) {
+        bestRatio = e.intersectionRatio;
+        best = parseInt(e.target.dataset.narrStep);
+      }
+    });
+    if (best >= 0) activateNarrStep(best);
+  }, {
+    root: null,
+    rootMargin: '-30% 0px -30% 0px',   // activate when 30% into viewport
+    threshold: [0, 0.1, 0.3, 0.5, 0.7, 1.0],
   });
-})();
 
-// ─── Initial render ───────────────────────────────────────────────────────────
-render();
-</script>
+  narrSteps.forEach(s => observer.observe(s));
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // THEME TOGGLE
+  // ══════════════════════════════════════════════════════════════════════════
+  (function () {
+    const toggle = document.querySelector('[data-theme-toggle]');
+    const root   = document.documentElement;
+    let dark = true;
+    root.setAttribute('data-theme', 'dark');
+
+    function setTheme(d) {
+      dark = d;
+      root.setAttribute('data-theme', dark ? 'dark' : 'light');
+      if (toggle) {
+        toggle.setAttribute('aria-label', 'Switch to ' + (dark ? 'light' : 'dark') + ' mode');
+        toggle.innerHTML = dark
+          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+      }
+      // Redraw after color vars settle
+      setTimeout(() => { renderMain(); renderNarr(); }, 50);
+    }
+
+    toggle && toggle.addEventListener('click', () => setTheme(!dark));
+    // System preference
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(mq.matches);
+    mq.addEventListener('change', e => setTheme(e.matches));
+  })();
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // INITIAL RENDER
+  // ══════════════════════════════════════════════════════════════════════════
+  renderMain();
+  narrDtheta = 0;
+  renderNarr();
+
+  // Resize: re-render both on window resize
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => { renderMain(); renderNarr(); }, 120);
+  });
+  </script>
 </body>
 </html>
