@@ -932,7 +932,7 @@
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--purple)"></div>
-              Similar triangle at P
+              △PQF at P &nbsp;∼&nbsp; △OBT (similar triangles)
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--text-muted); border-top:2px dashed var(--text-muted); height:0"></div>
@@ -1021,21 +1021,28 @@
           <div class="nstep-num">Step 04</div>
           <h3>Similar triangles connect arc to Δtan</h3>
           <p>
-            Here is Needham's key insight. The small triangle at P (formed by the chord PQ,
-            the radius OP, and a perpendicular) is <span class="f-purple">geometrically similar</span> to
-            the large right triangle formed by:
+            Here is Needham's key insight. Drop a perpendicular from Q onto the radius OP;
+            call the foot <strong class="f-purple">F</strong>.
+            The small right triangle <strong class="f-purple">△PQF</strong> has its right angle at F:
+            side <em>PF</em> runs along the radius (radial direction),
+            side <em>QF</em> is perpendicular to it, and
+            side <em>PQ</em> is the chord.
           </p>
           <p>
-            the origin O, the foot of the tangent line (1, 0), and the point (1, tan θ).
-            That large triangle has base = 1, height = tan(θ), and
-            hypotenuse = <span class="f-purple">sec(θ)</span> = 1/cos(θ).
+            The large right triangle <strong class="f-gold">△OBT</strong> has
+            O = origin, B = (1,&nbsp;0), T = (1,&nbsp;tan&nbsp;θ) — right angle at B,
+            base OB&nbsp;=&nbsp;1, height BT&nbsp;=&nbsp;tan&nbsp;θ,
+            hypotenuse OT&nbsp;=&nbsp;<span class="f-purple">sec&nbsp;θ</span>.
           </p>
           <p>
-            By the similarity ratio, the Δtan increment relates to the arc Δθ via the
-            square of the secant:
+            Both triangles share the same angle at their non-right vertex (equal to θ),
+            so by <strong>AA similarity</strong>: △PQF ∼ △OBT.
+            Similarity ratio = |OP|/|OB| = sec&nbsp;θ,
+            so each side of △PQF is sec&nbsp;θ times the corresponding side of △OBT:
           </p>
           <div class="formula-block">
-            Δtan / Δθ ≈ <span class="f-purple">sec(θ) × sec(θ)</span> = sec²(θ)
+            |chord PQ| / Δθ &nbsp;≈&nbsp; sec θ&nbsp;&nbsp;and&nbsp;&nbsp;|QF| / tan θ &nbsp;≈&nbsp; sec θ<br/>
+            ∴ Δtan / Δθ ≈ <span class="f-purple">sec θ × sec θ</span> = sec²(θ)
           </div>
         </div>
 
@@ -1110,8 +1117,8 @@
         </div>
         <div class="id-card">
           <div class="id-card-num">03</div>
-          <div class="id-card-title">Similar triangles</div>
-          <div class="id-card-desc">The tiny chord triangle at P is similar to the large secant triangle — the similarity ratio is sec(θ).</div>
+          <div class="id-card-title">△PQF ∼ △OBT</div>
+          <div class="id-card-desc">Drop a perpendicular from Q to radius OP, foot F. Both △PQF and △OBT are right triangles sharing angle θ — AA similarity, ratio sec θ.</div>
         </div>
         <div class="id-card">
           <div class="id-card-num">04</div>
@@ -1337,21 +1344,113 @@
       }));
     }
 
-    // ── Similar triangle at P (step 3+) ──
-    if (showStep >= 3 && dtheta * 180 / Math.PI > 1.5) {
-      const txDir = -Math.sin(th), tyDir = Math.cos(th);
-      const rxDir = Math.cos(th), ryDir = Math.sin(th);
-      const triScale = R * dtheta * 0.75;
-      const tQ = [Px + txDir * triScale, Py - tyDir * triScale];
-      const tR = [Px + rxDir * triScale, Py - ryDir * triScale];
+    // ── Small right triangle PQF at P — exact geometric construction (step 3+) ──
+    //
+    // The three vertices are:
+    //   P = (cos θ, sin θ)  — on the unit circle, tip of radius OP
+    //   Q = (cos(θ+Δθ), sin(θ+Δθ)) — adjacent point on unit circle
+    //   F = foot of perpendicular dropped from Q onto the line OP (the radius)
+    //
+    // The right angle is at F:
+    //   PF  lies along the radius OP  (radial side)
+    //   QF  is perpendicular to OP    (the "dropped perpendicular", not labelled)
+    //   PQ  is the chord              (hypotenuse of this small right triangle)
+    //
+    // Why △PQF ∼ △OBT  (B=(1,0), T=(1,tan θ)):
+    //   Both have a right angle:  ∠F = ∠B = 90°
+    //   The angle at P in △PQF = the angle at O in △OBT = θ
+    //     (OP makes angle θ with the x-axis;
+    //      QF ⊥ OP  mirrors  BT ⊥ OB,
+    //      and the angle between the hypotenuses equals θ)
+    //   ∴ all three angles match → AA similarity
+    //
+    // Similarity ratio:  |OP| / |OB| = sec θ / 1 = sec θ
+    //   |PQ| / |OT| = sec θ   →   Δtan / Δθ ≈ sec²θ
+    //
+    if (showStep >= 3 && dtheta * 180 / Math.PI > 1.0) {
+      // Q in SVG coords (unit circle point at θ+Δθ)
+      const Qx = OX + R * Math.cos(th2), Qy = OY - R * Math.sin(th2);
+
+      // F = foot of perpendicular from Q onto line OP
+      // Compute using vector projection in SVG coordinate space.
+      // O=(OX,OY), P=(Px,Py): dOP = P-O
+      const dOPx = Px - OX, dOPy = Py - OY;
+      const dOQx = Qx - OX, dOQy = Qy - OY;
+      const t = (dOQx * dOPx + dOQy * dOPy) / (dOPx * dOPx + dOPy * dOPy);
+      const Fx = OX + t * dOPx;
+      const Fy = OY + t * dOPy;
+
+      // ── Filled triangle PQF ──
       svgEl.appendChild(svgPath(
-        `M ${Px} ${Py} L ${tQ[0]} ${tQ[1]} L ${tR[0]} ${tR[1]} Z`,
-        { fill: css('--purple'), opacity: '0.17', stroke: css('--purple'), 'stroke-width': '1.5', 'stroke-opacity': '0.6' }
+        `M ${Px} ${Py} L ${Qx} ${Qy} L ${Fx} ${Fy} Z`,
+        { fill: css('--purple'), opacity: '0.22',
+          stroke: css('--purple'), 'stroke-width': '2.2',
+          'stroke-linejoin': 'round', 'stroke-opacity': '0.85' }
       ));
-      // ~ label
-      svgEl.appendChild(svgText((Px + tQ[0]) / 2 - 24, (Py + tQ[1]) / 2 - 8, '∼', {
-        'font-family': 'JetBrains Mono, monospace', 'font-size': '13',
-        fill: css('--purple'), opacity: '0.75', 'font-weight': '600',
+
+      // ── Right-angle mark at F ──
+      const raSz = 5.5;
+      const fpLen = Math.sqrt((Px-Fx)**2 + (Py-Fy)**2) || 1;
+      const fqLen = Math.sqrt((Qx-Fx)**2 + (Qy-Fy)**2) || 1;
+      const fpUx = (Px - Fx) / fpLen, fpUy = (Py - Fy) / fpLen;
+      const fqUx = (Qx - Fx) / fqLen, fqUy = (Qy - Fy) / fqLen;
+      const raCornerX = Fx + fpUx * raSz + fqUx * raSz;
+      const raCornerY = Fy + fpUy * raSz + fqUy * raSz;
+      svgEl.appendChild(svgPath(
+        `M ${Fx + fpUx * raSz} ${Fy + fpUy * raSz} L ${raCornerX} ${raCornerY} L ${Fx + fqUx * raSz} ${Fy + fqUy * raSz}`,
+        { fill: 'none', stroke: css('--purple'), 'stroke-width': '1.4', opacity: '1' }
+      ));
+
+      // ── Vertex labels: P already drawn above; add Q (already drawn) and F ──
+      const triCx = (Px + Qx + Fx) / 3, triCy = (Py + Qy + Fy) / 3;
+      // F: offset away from centroid
+      const fDist = Math.sqrt((Fx-triCx)**2 + (Fy-triCy)**2) || 1;
+      const fOffX = (Fx - triCx) / fDist * 14;
+      const fOffY = (Fy - triCy) / fDist * 14;
+      svgEl.appendChild(svgText(Fx + fOffX, Fy + fOffY + 4, 'F', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
+        fill: css('--purple'), 'font-weight': '700', 'text-anchor': 'middle',
+      }));
+
+      // ── Side labels ──
+      const sf = { 'font-family': 'JetBrains Mono, monospace', 'font-size': '9',
+                   fill: css('--purple'), 'font-weight': '600', 'text-anchor': 'middle', opacity: '0.9' };
+
+      // chord PQ — label offset outward from triangle
+      const pqMx = (Px + Qx) / 2, pqMy = (Py + Qy) / 2;
+      const pqDx = Qx - Px, pqDy = Qy - Py;
+      const pqN = Math.sqrt(pqDx*pqDx + pqDy*pqDy) || 1;
+      let nPQx = -pqDy / pqN, nPQy = pqDx / pqN;
+      if (nPQx*(Fx-pqMx) + nPQy*(Fy-pqMy) > 0) { nPQx = -nPQx; nPQy = -nPQy; }
+      svgEl.appendChild(svgText(pqMx + nPQx * 14, pqMy + nPQy * 14, 'chord PQ', sf));
+
+      // PF (radial side) — label offset from midpoint, perpendicular to PF
+      const pfMx = (Px + Fx) / 2, pfMy = (Py + Fy) / 2;
+      const pfDx = Fx - Px, pfDy = Fy - Py;
+      const pfN = Math.sqrt(pfDx*pfDx + pfDy*pfDy) || 1;
+      let nPFx = -pfDy / pfN, nPFy = pfDx / pfN;
+      if (nPFx*(Qx-pfMx) + nPFy*(Qy-pfMy) > 0) { nPFx = -nPFx; nPFy = -nPFy; }
+      svgEl.appendChild(svgText(pfMx + nPFx * 14, pfMy + nPFy * 14, 'OP (radial)', sf));
+
+      // ── Similarity notation △PQF ∼ △OBT ──
+      // Place outside the small triangle, toward the large triangle
+      const simX = (Px + OX / 2 + tx1 / 2) / 2;
+      const simY = Math.min(Py, tanPtY) - 18;
+      svgEl.appendChild(svgText(simX, simY, '△PQF ∼ △OBT', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '9.5',
+        fill: css('--purple'), opacity: '0.9', 'text-anchor': 'middle',
+        'font-weight': '700',
+      }));
+      // B and T vertex labels on the large triangle
+      // B = (1, 0)
+      svgEl.appendChild(svgText(tx1 + 8, toY(0) + 13, 'B', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
+        fill: css('--gold'), 'font-weight': '700',
+      }));
+      // T = (1, tan θ)
+      svgEl.appendChild(svgText(tx1 - 14, tanPtY - 7, 'T', {
+        'font-family': 'JetBrains Mono, monospace', 'font-size': '11',
+        fill: css('--gold'), 'font-weight': '700',
       }));
     }
 
