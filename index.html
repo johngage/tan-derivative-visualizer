@@ -932,7 +932,7 @@
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--purple)"></div>
-              △PQF at P — ∠F=90°, ∠Q=Δθ/2, ∠P≈90°
+              △TT′S — evanescent triangle ∼ △OBT (ultimately similar)
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--text-muted); border-top:2px dashed var(--text-muted); height:0"></div>
@@ -1019,59 +1019,62 @@
 
         <div class="nstep" data-narr-step="3">
           <div class="nstep-num">Step 04</div>
-          <h3>Similar triangles connect arc to Δtan</h3>
+          <h3>Evanescent triangles — Newton's ultimate similarity</h3>
           <p>
-            Drop a perpendicular from <strong class="f-green">Q</strong> onto the radius OP;
-            call the foot <strong class="f-purple">F</strong>.
-            Triangle <strong class="f-purple">△PQF</strong> has its right angle at F.
-            The exact leg lengths are:
+            This is Needham's key insight, drawn directly from Newton's method of
+            <em>ultimate ratios</em>. Consider two triangles on the diagram:
+          </p>
+          <p>
+            <strong>Large triangle △OBT</strong> — O at the origin, B&nbsp;=&nbsp;(1,&nbsp;0),
+            T&nbsp;=&nbsp;(1,&nbsp;tan θ). Right angle at B, hypotenuse OT&nbsp;=&nbsp;L&nbsp;=&nbsp;sec θ,
+            angle θ at O.
+          </p>
+          <p>
+            <strong>Small triangle △TT′S</strong> — T and T′&nbsp;=&nbsp;(1,&nbsp;tan(θ+Δθ)) are
+            adjacent points on the tangent line x&nbsp;=&nbsp;1; S is the foot of the perpendicular
+            from T onto the ray OT′. The hypotenuse TT′&nbsp;=&nbsp;δT is exactly the increment
+            Δtan we want to measure.
+          </p>
+          <p>
+            As Δθ → 0, the angle ψ at T′ approaches π/2 — so the small triangle becomes
+            <strong>ultimately similar</strong> to the large one (Newton's evanescent triangles):
           </p>
           <div class="formula-block">
-            |FQ| = sin Δθ &nbsp;≈&nbsp; <span class="f-green">Δθ</span> &nbsp;&nbsp;(first order — the key leg)<br/>
-            |FP| = 1 − cos Δθ &nbsp;≈&nbsp; (Δθ)²/2 &nbsp;&nbsp;(tiny, second order)<br/>
-            ∠P ≈ 90°,&nbsp; ∠Q = Δθ/2,&nbsp; ∠F = 90°
+            △TT′S ∼ △OBT &nbsp;(in the limit Δθ → 0)<br/>
+            similarity ratio&nbsp;=&nbsp;L / 1&nbsp;=&nbsp;sec θ
           </div>
           <p>
-            <strong>Note:</strong> neither angle at P nor Q equals θ — the angles in △PQF depend only on Δθ, not on θ.
-            The two factors of sec θ arise from <em>two separate projections</em>:
-          </p>
-          <p>
-            <strong>First sec θ:</strong> The perpendicular leg FQ lives on the unit circle.
-            To reach the tangent line x&nbsp;=&nbsp;1, the radial direction OP is tilted at angle θ,
-            so the vertical projection onto x&nbsp;=&nbsp;1 picks up a factor of
-            <span class="f-purple">1/cos θ = sec θ</span>.
-          </p>
-          <p>
-            <strong>Second sec θ:</strong> The tangent line OT is itself tilted — the line from O to T&nbsp;=&nbsp;(1,&nbsp;tan θ)
-            makes angle θ with the horizontal, so the vertical component of Δtan
-            picks up another factor of <span class="f-purple">sec θ</span>.
+            The side of the small triangle corresponding to OB&nbsp;=&nbsp;1 is the arc δs
+            at radius L subtending Δθ. By the arc-length formula, δs&nbsp;=&nbsp;L·Δθ&nbsp;=&nbsp;sec θ·Δθ.
+            From the similar triangles, δT / δs ≍ L / 1, so:
           </p>
           <div class="formula-block">
-            Δtan = |FQ| · sec θ · sec(θ+Δθ)<br/>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;≈ Δθ · sec θ · sec θ<br/>
-            ∴ Δtan / Δθ → <span class="f-red">sec²(θ) = 1 + tan²(θ)</span>
+            δT ≍ L · δs = L · L · Δθ = sec²θ · Δθ<br/>
+            ∴ δT / Δθ → <span class="f-red">sec²(θ) = 1 + tan²(θ)</span>
           </div>
         </div>
 
         <div class="nstep" data-narr-step="4">
           <div class="nstep-num">Step 05</div>
-          <h3>Take the limit — Δθ → 0</h3>
+          <h3>The limit — evanescent triangles become exact</h3>
           <p>
-            As <span class="f-green">Δθ → 0</span>, the chord-to-arc ratio → 1, the perpendicularity
-            of PQ to OP becomes exact, and the similar-triangle approximation becomes an equality.
-            The ratio Δtan/Δθ converges to <strong>sec²(θ)</strong>.
+            As <span class="f-green">Δθ → 0</span>, the small triangle △TT′S physically
+            shrinks — but its <em>shape</em> converges exactly to the shape of △OBT.
+            Newton called such vanishing figures <strong>evanescent triangles</strong>;
+            their ratio persists even as the triangles themselves disappear.
           </p>
           <p>
-            Finally, the <strong>Pythagorean identity</strong> sec²(θ) = 1 + tan²(θ) gives us
-            the result in its most beautiful form — the derivative of tan(θ) expressed
-            entirely in terms of tan(θ) itself:
+            The similarity ratio becomes exact in the limit, turning the approximation
+            δT&nbsp;≍&nbsp;sec²θ·Δθ into a true equality for the derivative.
+            The <strong>Pythagorean identity</strong> then gives the result its most elegant form —
+            the derivative of tan(θ) expressed entirely in terms of tan(θ) itself:
           </p>
           <div class="formula-block">
             <strong>d/dθ [tan θ] = sec²(θ) = <span class="f-red">1 + tan²(θ)</span></strong>
           </div>
           <p>
             Drag <span class="f-green">Δθ</span> to nearly zero in the interactive explorer above
-            and watch the ratio column turn green as the approximation becomes exact.
+            and watch the small triangle △TT′S shrink while the ratio column turns green.
           </p>
         </div>
 
@@ -1124,8 +1127,8 @@
         </div>
         <div class="id-card">
           <div class="id-card-num">03</div>
-          <div class="id-card-title">Two projections of sec θ</div>
-          <div class="id-card-desc">△PQF has ∠F=90°, ∠Q=Δθ/2 — no angle equals θ. The sec²θ arises from two separate projections: unit circle → x=1 line, then the tilt of OT. Both contribute one factor of sec θ.</div>
+          <div class="id-card-title">Ultimate similar triangles</div>
+          <div class="id-card-desc">As Δθ → 0, small △TT′S becomes ultimately similar to large △OBT (Newton's evanescent triangles). Similarity ratio L/1 = sec θ; arc δs = L·Δθ; so δT ≍ L·δs = sec²θ·Δθ.</div>
         </div>
         <div class="id-card">
           <div class="id-card-num">04</div>
@@ -1351,137 +1354,154 @@
       }));
     }
 
-    // ── Small right triangle PQF at P — exact geometric construction (step 3+) ──
+    // ── Needham's geometric proof: similar triangles on the tangent line (step 3+) ──
     //
-    // Vertices:
-    //   P = (cos θ, sin θ)   — on unit circle
-    //   Q = (cos(θ+Δθ), sin(θ+Δθ)) — on unit circle
-    //   F = foot of perpendicular from Q onto line OP
+    // This follows Needham VCA §[tan derivative]: the key similarity is NOT at P on
+    // the circle but at T on the tangent line x = 1.
     //
-    // Exact leg magnitudes (from Q·P = cos Δθ):
-    //   |FP| = 1 − cos Δθ  ≈  (Δθ)²/2   (tiny, second-order)
-    //   |FQ| = sin Δθ      ≈  Δθ         (first-order — the key leg)
-    //   |PQ| = 2 sin(Δθ/2) ≈  Δθ         (chord)
+    // LARGE triangle △OBT:
+    //   O = origin, B = (1,0), T = (1, tan θ)
+    //   ∠B = 90°, ∠O = θ, hypotenuse OT = L = sec θ
     //
-    // Angles in △PQF:
-    //   ∠F = 90°  (by construction)
-    //   ∠Q = Δθ/2  →  0 as Δθ→0
-    //   ∠P = 90° − Δθ/2  →  90° as Δθ→0
+    // SMALL triangle at T:
+    //   T  = (1, tan θ)      — current intersection on x=1
+    //   T' = (1, tan(θ+Δθ)) — next intersection on x=1
+    //   The second radial ray OQ meets x=1 at T'; the angle ψ at T' between TT'
+    //   and the ray OT' → π/2 as Δθ→0 (because OT' rotates to become ⊥ to the
+    //   tangent direction, mirroring how ∠O in the large triangle = θ with ∠B=90°).
     //
-    // IMPORTANT: Neither angle at P nor Q equals θ.
-    // The two factors of sec θ in the derivative arise from two projections:
-    //   1. FQ = sin Δθ is the arc-perpendicular component.
-    //      Δtan = FQ · sec θ · sec(θ+Δθ)  →  Δθ · sec²θ
-    //   2. The first sec θ scales the unit-circle perpendicular to the
-    //      x=1 line; the second sec θ accounts for the tilt of OT.
+    // ULTIMATE SIMILARITY (Newton's "evanescent triangles"):
+    //   As Δθ→0 the small triangle at T' becomes ultimately similar to △OBT.
+    //   The similarity ratio is L/1 = sec θ, so:
+    //     δT / δs  ≍  L / 1   where δs = arc of radius L subtending Δθ ≍ L·Δθ
+    //   ∴  δT ≍ L · δs ≍ L · L·Δθ = L²·Δθ = sec²θ · Δθ
+    //   ∴  dT/dθ = sec²θ = 1 + tan²θ  ✓
     //
-    if (showStep >= 3 && dtheta * 180 / Math.PI > 1.0) {
-      // ── Exact positions ──
-      const Qx = OX + R * Math.cos(th2), Qy = OY - R * Math.sin(th2);
+    if (showStep >= 3) {
+      // ── Large triangle △OBT — highlight it ──
+      // O=(OX,OY), B=(tx1, toY(0)), T=(tx1, tanPtY)
+      const Bx = tx1, By = toY(0);
+      const Tx = tx1, Ty = tanPtY;
 
-      // F = foot of perpendicular from Q onto line OP (vector projection)
-      const dOPx = Px - OX, dOPy = Py - OY;
-      const dOQx = Qx - OX, dOQy = Qy - OY;
-      const t = (dOQx * dOPx + dOQy * dOPy) / (dOPx * dOPx + dOPy * dOPy);
-      const Fx = OX + t * dOPx;
-      const Fy = OY + t * dOPy;
-
-      // ── Filled triangle PQF ──
+      // Fill the large triangle lightly
       svgEl.appendChild(svgPath(
-        `M ${Px} ${Py} L ${Qx} ${Qy} L ${Fx} ${Fy} Z`,
-        { fill: css('--purple'), opacity: '0.22',
-          stroke: css('--purple'), 'stroke-width': '2.2',
-          'stroke-linejoin': 'round', 'stroke-opacity': '0.85' }
+        `M ${OX} ${OY} L ${Bx} ${By} L ${Tx} ${Ty} Z`,
+        { fill: css('--gold'), opacity: '0.08', stroke: 'none' }
+      ));
+      // Hypotenuse OT (= L = sec θ) — already drawn as secant line above;
+      // draw it more prominently here
+      svgEl.appendChild(svgPath(
+        `M ${OX} ${OY} L ${Tx} ${Ty}`,
+        { stroke: css('--purple'), 'stroke-width': '2', 'stroke-dasharray': '6,3', opacity: '0.7' }
+      ));
+      // Right-angle mark at B
+      const rSz = 7;
+      svgEl.appendChild(svgPath(
+        `M ${Bx-rSz} ${By} L ${Bx-rSz} ${By-rSz} L ${Bx} ${By-rSz}`,
+        { fill:'none', stroke: css('--accent'), 'stroke-width':'1.2', opacity:'0.55' }
+      ));
+      // Vertex labels on large triangle
+      const vf = { 'font-family':'JetBrains Mono, monospace','font-weight':'700','font-size':'11' };
+      svgEl.appendChild(svgText(Bx+9, By+14, 'B', { ...vf, fill: css('--gold') }));
+      svgEl.appendChild(svgText(Tx-14, Ty-8, 'T', { ...vf, fill: css('--gold') }));
+      // θ label at O inside the large triangle
+      svgEl.appendChild(svgText(OX+28, OY-10, 'θ', {
+        'font-family':'JetBrains Mono, monospace','font-size':'10',
+        fill: css('--gold'), 'font-weight':'600', 'text-anchor':'middle'
+      }));
+      // L = sec θ label on hypotenuse OT
+      const hDx = Tx-OX, hDy = Ty-OY;
+      const hLen = Math.sqrt(hDx*hDx+hDy*hDy)||1;
+      const pX = -hDy/hLen*14, pY = hDx/hLen*14;
+      svgEl.appendChild(svgText((OX+Tx)/2+pX, (OY+Ty)/2+pY+4, 'L=secθ', {
+        'font-family':'JetBrains Mono, monospace','font-size':'9.5',
+        fill: css('--purple'), opacity:'0.85', 'text-anchor':'middle','font-weight':'600'
+      }));
+
+      // ── Small triangle at T — the "evanescent" similar triangle ──
+      // Vertices: T=(1,tanθ), T'=(1,tan(θ+Δθ)), and the foot of the
+      // perpendicular from T onto the second ray OT'.
+      // In the limit the small triangle is ultimately similar to △OBT.
+      const Tpx = tx1, Tpy = toY(tanTh2);  // T' on x=1
+
+      // Foot of perpendicular from T onto line OT'
+      // OT' direction unit vector in SVG:
+      const OTp_dx = Tpx - OX, OTp_dy = Tpy - OY;
+      const OTp_len = Math.sqrt(OTp_dx*OTp_dx + OTp_dy*OTp_dy)||1;
+      const dOT_dx = Tx - OX, dOT_dy = Ty - OY;
+      const t2 = (dOT_dx*OTp_dx + dOT_dy*OTp_dy) / (OTp_dx*OTp_dx + OTp_dy*OTp_dy);
+      const Spx = OX + t2*OTp_dx, Spy = OY + t2*OTp_dy;  // foot S
+
+      // Fill small triangle T–T'–S
+      svgEl.appendChild(svgPath(
+        `M ${Tx} ${Ty} L ${Tpx} ${Tpy} L ${Spx} ${Spy} Z`,
+        { fill: css('--purple'), opacity: '0.25',
+          stroke: css('--purple'), 'stroke-width': '2',
+          'stroke-linejoin':'round', 'stroke-opacity':'0.9' }
       ));
 
-      // ── Right-angle mark at F ──
-      const raSz = 5.5;
-      const fpLen = Math.sqrt((Px-Fx)**2 + (Py-Fy)**2) || 1;
-      const fqLen = Math.sqrt((Qx-Fx)**2 + (Qy-Fy)**2) || 1;
-      const fpUx = (Px-Fx)/fpLen, fpUy = (Py-Fy)/fpLen;
-      const fqUx = (Qx-Fx)/fqLen, fqUy = (Qy-Fy)/fqLen;
-      const raCornerX = Fx + fpUx*raSz + fqUx*raSz;
-      const raCornerY = Fy + fpUy*raSz + fqUy*raSz;
+      // Right-angle mark at S
+      const rSz2 = 5;
+      const fp2Len = Math.sqrt((Tx-Spx)**2+(Ty-Spy)**2)||1;
+      const fq2Len = Math.sqrt((Tpx-Spx)**2+(Tpy-Spy)**2)||1;
+      const fp2Ux = (Tx-Spx)/fp2Len, fp2Uy = (Ty-Spy)/fp2Len;
+      const fq2Ux = (Tpx-Spx)/fq2Len, fq2Uy = (Tpy-Spy)/fq2Len;
       svgEl.appendChild(svgPath(
-        `M ${Fx+fpUx*raSz} ${Fy+fpUy*raSz} L ${raCornerX} ${raCornerY} L ${Fx+fqUx*raSz} ${Fy+fqUy*raSz}`,
-        { fill: 'none', stroke: css('--purple'), 'stroke-width': '1.4', opacity: '1' }
+        `M ${Spx+fp2Ux*rSz2} ${Spy+fp2Uy*rSz2} L ${Spx+fp2Ux*rSz2+fq2Ux*rSz2} ${Spy+fp2Uy*rSz2+fq2Uy*rSz2} L ${Spx+fq2Ux*rSz2} ${Spy+fq2Uy*rSz2}`,
+        { fill:'none', stroke: css('--purple'), 'stroke-width':'1.3', opacity:'0.9' }
       ));
 
-      // ── Vertex label F (offset away from centroid) ──
-      const triCx = (Px+Qx+Fx)/3, triCy = (Py+Qy+Fy)/3;
-      const fDist = Math.sqrt((Fx-triCx)**2+(Fy-triCy)**2)||1;
+      // Vertex labels for small triangle
+      const sf2 = { 'font-family':'JetBrains Mono, monospace','font-weight':'700','font-size':'10' };
+      // T' label
+      svgEl.appendChild(svgText(Tpx+9, Tpy+4, "T'", { ...sf2, fill: css('--green') }));
+      // S label (foot) — offset away from centroid
+      const smCx = (Tx+Tpx+Spx)/3, smCy = (Ty+Tpy+Spy)/3;
+      const sDist = Math.sqrt((Spx-smCx)**2+(Spy-smCy)**2)||1;
       svgEl.appendChild(svgText(
-        Fx + (Fx-triCx)/fDist*15, Fy + (Fy-triCy)/fDist*15 + 4, 'F',
-        { 'font-family':'JetBrains Mono, monospace','font-size':'11',
-          fill:css('--purple'),'font-weight':'700','text-anchor':'middle' }
+        Spx+(Spx-smCx)/sDist*14, Spy+(Spy-smCy)/sDist*14+4, 'S',
+        { ...sf2, fill: css('--purple'), 'text-anchor':'middle' }
       ));
 
-      // ── Side labels ──
-      const sf = { 'font-family':'JetBrains Mono, monospace','font-size':'9',
-                   fill:css('--purple'),'font-weight':'600','text-anchor':'middle',opacity:'0.9' };
-
-      // FQ — the key leg: length ≈ sin(Δθ) ≈ Δθ
-      // Label it "FQ ≈ Δθ" and show it's perpendicular to OP
-      const qfMx = (Qx+Fx)/2, qfMy = (Qy+Fy)/2;
-      const qfDx = Qx-Fx, qfDy = Qy-Fy;
-      const qfN = Math.sqrt(qfDx*qfDx+qfDy*qfDy)||1;
-      let nQFx = -qfDy/qfN, nQFy = qfDx/qfN;
-      // offset away from P
-      if (nQFx*(Px-qfMx)+nQFy*(Py-qfMy) > 0) { nQFx=-nQFx; nQFy=-nQFy; }
-      svgEl.appendChild(svgText(qfMx+nQFx*14, qfMy+nQFy*14, 'FQ≈Δθ', sf));
-
-      // PF — tiny second-order leg along OP; label it
-      const pfMx = (Px+Fx)/2, pfMy = (Py+Fy)/2;
-      const pfDx = Fx-Px, pfDy = Fy-Py;
-      const pfN = Math.sqrt(pfDx*pfDx+pfDy*pfDy)||1;
-      let nPFx = -pfDy/pfN, nPFy = pfDx/pfN;
-      if (nPFx*(Qx-pfMx)+nPFy*(Qy-pfMy) > 0) { nPFx=-nPFx; nPFy=-nPFy; }
-      svgEl.appendChild(svgText(pfMx+nPFx*14, pfMy+nPFy*14, 'FP≈0', sf));
-
-      // ── Angle labels in △PQF ──
-      // ∠Q = Δθ/2  — at vertex Q
-      const dthDeg = (dtheta * 180 / Math.PI).toFixed(0);
-      const angleQLabelX = Qx + (Fx-Qx)/Math.sqrt((Fx-Qx)**2+(Fy-Qy)**2)*18
-                              + (Px-Qx)/Math.sqrt((Px-Qx)**2+(Py-Qy)**2)*18;
-      const angleQLabelY = Qy + (Fy-Qy)/Math.sqrt((Fx-Qx)**2+(Fy-Qy)**2)*18
-                              + (Py-Qy)/Math.sqrt((Px-Qx)**2+(Py-Qy)**2)*18;
-      svgEl.appendChild(svgText(angleQLabelX, angleQLabelY, 'Δθ/2', {
-        'font-family':'JetBrains Mono, monospace','font-size':'8.5',
-        fill:css('--green'),'font-weight':'600','text-anchor':'middle',opacity:'0.9'
-      }));
-      // ∠P ≈ 90°  — at vertex P
-      const anglePLabelX = Px + (Fx-Px)/Math.sqrt((Fx-Px)**2+(Fy-Py)**2)*16
-                              + (Qx-Px)/Math.sqrt((Qx-Px)**2+(Qy-Py)**2)*16;
-      const anglePLabelY = Py + (Fy-Py)/Math.sqrt((Fx-Px)**2+(Fy-Py)**2)*16
-                              + (Qy-Py)/Math.sqrt((Qx-Px)**2+(Qy-Py)**2)*16;
-      svgEl.appendChild(svgText(anglePLabelX, anglePLabelY, '≈90°', {
-        'font-family':'JetBrains Mono, monospace','font-size':'8.5',
-        fill:css('--accent'),'font-weight':'600','text-anchor':'middle',opacity:'0.9'
+      // ── Similarity label ──
+      svgEl.appendChild(svgText(tx1+52, (Ty+Tpy)/2 - 2, '△TT′S ∼ △OBT', {
+        'font-family':'JetBrains Mono, monospace','font-size':'9.5',
+        fill: css('--purple'), opacity:'0.9','text-anchor':'start','font-weight':'700'
       }));
 
-      // ── B and T labels on large triangle ──
-      svgEl.appendChild(svgText(tx1+9, toY(0)+13, 'B', {
-        'font-family':'JetBrains Mono, monospace','font-size':'11',
-        fill:css('--gold'),'font-weight':'700'
-      }));
-      svgEl.appendChild(svgText(tx1-14, tanPtY-7, 'T', {
-        'font-family':'JetBrains Mono, monospace','font-size':'11',
-        fill:css('--gold'),'font-weight':'700'
-      }));
+      // ── Key arc δs on circle of radius L, centred at O ──
+      // The arc at radius L from O, subtending Δθ, has length L·Δθ ≍ δs
+      // Draw it from T to a point on the circle of radius L at angle θ+Δθ
+      const Lval = secTh;  // = |OT| in unit coords
+      const arcPt1x = OX + Lval*R*Math.cos(th),  arcPt1y = OY - Lval*R*Math.sin(th);
+      const arcPt2x = OX + Lval*R*Math.cos(th2), arcPt2y = OY - Lval*R*Math.sin(th2);
+      svgEl.appendChild(svgPath(
+        `M ${arcPt1x} ${arcPt1y} A ${Lval*R} ${Lval*R} 0 0 0 ${arcPt2x} ${arcPt2y}`,
+        { fill:'none', stroke: css('--green'), 'stroke-width':'2',
+          'stroke-dasharray':'4,3', opacity:'0.7' }
+      ));
+      // δs label
+      const arcMid2 = (th+th2)/2;
+      const arcLR = Lval*R + 14;
+      svgEl.appendChild(svgText(
+        OX + arcLR*Math.cos(arcMid2), OY - arcLR*Math.sin(arcMid2),
+        'δs≈L·Δθ',
+        { 'font-family':'JetBrains Mono, monospace','font-size':'9',
+          fill: css('--green'), 'text-anchor':'middle','font-weight':'600', opacity:'0.85' }
+      ));
 
-      // ── Annotation box: the two-step scaling ──
-      // Show the formula  Δtan = FQ · secθ · sec(θ+Δθ)  → Δθ · sec²θ
-      // as a small label near the Δtan bracket
-      const annoX = tx1 + 52;
-      const annoY = (tanPtY + toY(Math.tan(th2))) / 2;
-      const annoLines = [
-        'Δtan = FQ·secθ·sec(θ+Δθ)',
-        '     ≈ Δθ · sec²θ',
+      // ── Derivation annotation ──
+      const annoX2 = tx1 + 52;
+      const annoY2 = (Ty+Tpy)/2 + 16;
+      const lines2 = [
+        'δT/δs ≍ L/1 (similar △)',
+        'δs ≍ L·Δθ  →  δT ≍ L²·Δθ',
+        'd/dθ tanθ = L² = sec²θ',
       ];
-      for (let i = 0; i < annoLines.length; i++) {
-        svgEl.appendChild(svgText(annoX, annoY + i * 13, annoLines[i], {
+      for (let i = 0; i < lines2.length; i++) {
+        svgEl.appendChild(svgText(annoX2, annoY2+i*13, lines2[i], {
           'font-family':'JetBrains Mono, monospace','font-size':'8.5',
-          fill:css('--red'),opacity:'0.85','font-weight':'500',
+          fill: css('--red'), opacity:'0.85','font-weight':'500',
         }));
       }
     }
