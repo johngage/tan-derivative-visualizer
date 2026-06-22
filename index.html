@@ -774,7 +774,31 @@
     .explore-side::-webkit-scrollbar { width: 5px; }
     .explore-side::-webkit-scrollbar-track { background: transparent; }
     .explore-side::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  </style>
+  
+  /* ── Similar-triangle comparison inset ── */
+  .explore-canvas { position: relative; }
+  .compare-inset {
+    position: absolute;
+    bottom: 8px; left: 8px;
+    width: 320px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 8px 4px;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  }
+  .compare-inset-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  #compare-svg { width: 100%; height: auto; display: block; }
+</style>
 </head>
 <body>
 
@@ -846,6 +870,11 @@
       <!-- SVG canvas -->
       <div class="explore-canvas">
         <svg id="main-svg" viewBox="0 0 560 480" preserveAspectRatio="xMidYMid meet" aria-label="Interactive geometric derivation of tan(θ)"></svg>
+        <!-- Inset: similar-triangle comparison panel -->
+        <div class="compare-inset">
+          <div class="compare-inset-title">Similar triangles aligned</div>
+          <svg id="compare-svg" viewBox="0 0 320 150" aria-label="Both triangles drawn in same orientation"></svg>
+        </div>
       </div>
 
       <!-- Controls bar below the canvas -->
@@ -1563,6 +1592,142 @@
     }
   }
 
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // COMPARISON INSET — draw △OBT and △TT′S side-by-side, same orientation
+  // Both triangles: right angle at bottom-right, θ at bottom-left, 90−θ at top
+  // ══════════════════════════════════════════════════════════════════════════
+  function drawComparison(svgEl, thetaRad, dthetaRad) {
+    while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+
+    const W = 320, H = 150;
+    const th  = thetaRad;
+    const th2 = thetaRad + dthetaRad;
+
+    // Helper: draw one right triangle given:
+    //   cx,cy = bottom-right corner (right angle)
+    //   base  = width going LEFT  (horizontal leg)
+    //   height = going UP          (vertical leg)
+    //   color scheme
+    //   labels: {origin, right, top}  (vertex label strings)
+    //   angleLabels: {origin, top}    (angle label strings, shown near each vertex)
+    function drawTri(cx, cy, base, height, scheme, labels, angleLabels) {
+      // Vertices
+      const Rx = cx,        Ry = cy;          // right angle (bottom-right)
+      const Ox = cx - base, Oy = cy;          // "origin" vertex (bottom-left, angle θ)
+      const Tx = cx,        Ty = cy - height; // "top" vertex (top-right, angle 90-θ)
+
+      // Fill
+      svgEl.appendChild(svgPath(
+        `M ${Ox} ${Oy} L ${Rx} ${Ry} L ${Tx} ${Ty} Z`,
+        { fill: scheme.fill, opacity: '0.12', stroke: 'none' }
+      ));
+      // Sides
+      const sides = [
+        [Ox, Oy, Rx, Ry],   // base (horizontal)
+        [Rx, Ry, Tx, Ty],   // vertical leg
+        [Ox, Oy, Tx, Ty],   // hypotenuse
+      ];
+      const sideStyles = [
+        { stroke: scheme.base,  'stroke-width': '1.8' },
+        { stroke: scheme.vert,  'stroke-width': '1.8' },
+        { stroke: scheme.hyp,   'stroke-width': '2.2' },
+      ];
+      sides.forEach(([x1,y1,x2,y2], i) => {
+        svgEl.appendChild(svgPath(`M ${x1} ${y1} L ${x2} ${y2}`,
+          { fill:'none', ...sideStyles[i] }));
+      });
+      // Right-angle mark
+      const rs = 7;
+      svgEl.appendChild(svgPath(
+        `M ${Rx-rs} ${Ry} L ${Rx-rs} ${Ry-rs} L ${Rx} ${Ry-rs}`,
+        { fill:'none', stroke: scheme.base, 'stroke-width':'1.2' }
+      ));
+      // Vertex labels
+      const vf = { 'font-family':'JetBrains Mono,monospace','font-weight':'700','font-size':'11' };
+      svgEl.appendChild(svgText(Ox-14, Oy+5,  labels.origin, { ...vf, fill: scheme.hyp,  'text-anchor':'middle' }));
+      svgEl.appendChild(svgText(Rx+9,  Ry+10, labels.right,  { ...vf, fill: scheme.base, 'text-anchor':'start'  }));
+      svgEl.appendChild(svgText(Tx+6,  Ty+4,  labels.top,    { ...vf, fill: scheme.vert, 'text-anchor':'start'  }));
+      // Angle labels inside triangle
+      const af = { 'font-family':'JetBrains Mono,monospace','font-size':'9','font-weight':'600' };
+      svgEl.appendChild(svgText(Ox+18, Oy-5, angleLabels.origin, { ...af, fill: scheme.hyp,  'text-anchor':'start' }));
+      svgEl.appendChild(svgText(Tx-8,  Ty+18, angleLabels.top,   { ...af, fill: scheme.vert, 'text-anchor':'end'   }));
+    }
+
+    // ── Scale: use a fixed height, compute width from tan(θ) ──────────────
+    const triH = 100;
+    const largeBase = triH / Math.tan(th);  // OB = 1, BT = tan θ → base/height = 1/tanθ
+
+    // Small triangle exact side lengths in math coords
+    //   TT' = |tan(θ+Δθ) − tan(θ)| = δT (hypotenuse)
+    //   ST' = projection of OT' direction — computed analytically
+    // Angles: ∠T → θ, ∠T′ → 90−θ, ∠S = 90 (exact)
+    // So the small triangle is just a scaled copy of OBT.
+    // Use SAME triH for height so we can see the ratio:
+    const smallBase = triH / Math.tan(th);  // same shape, different scale — use smaller
+    const scaleFactor = Math.abs(Math.tan(th2) - Math.tan(th)) / (1/Math.cos(th));
+    const smallH = triH * scaleFactor;
+    const smallBase2 = smallH / Math.tan(th);
+
+    // Layout: two triangles side by side with a gap
+    const pad = 24;
+    const gap = 20;
+    const midY = H - 20;  // baseline y
+
+    // Large triangle: right angle at bottom-right
+    const largeCx = pad + largeBase;
+    const largeCy = midY;
+
+    // Small triangle: right angle at bottom-right, to the right of large
+    const smallCx = pad + largeBase + gap + smallBase2 + 10;
+    const smallCy = midY;
+
+    // Color schemes
+    const schLarge = { fill: css('--gold'), base: css('--gold'), vert: css('--red'), hyp: css('--purple') };
+    const schSmall = { fill: css('--purple'), base: css('--green'), vert: css('--red'), hyp: css('--purple') };
+
+    // Draw large △OBT
+    drawTri(largeCx, largeCy, largeBase, triH, schLarge,
+      { origin: 'O', right: 'B', top: 'T' },
+      { origin: 'θ', top: '90°−θ' }
+    );
+
+    // Draw small △TT′S (same shape, scaled by δT/L)
+    drawTri(smallCx, smallCy, smallBase2, smallH, schSmall,
+      { origin: 'T', right: 'S', top: "T'"},
+      { origin: 'θ→', top: '→90°−θ' }
+    );
+
+    // ── "∼" similarity symbol between them ──
+    const midBetween = pad + largeBase + gap/2 + 5;
+    svgEl.appendChild(svgText(midBetween, midY - triH/2, '∼', {
+      'font-family':'JetBrains Mono,monospace','font-size':'20','font-weight':'700',
+      fill: css('--text-muted'), 'text-anchor':'middle', opacity:'0.8'
+    }));
+
+    // ── Labels for sides ──
+    const sf = { 'font-family':'JetBrains Mono,monospace','font-size':'8','font-weight':'500' };
+    // Large: label base OB=1, vert BT=tanθ, hyp OT=secθ
+    svgEl.appendChild(svgText(pad + largeBase/2, largeCy+14, 'OB=1',
+      { ...sf, fill: css('--gold'), 'text-anchor':'middle' }));
+    svgEl.appendChild(svgText(largeCx+10, largeCy-triH/2, 'BT=tanθ',
+      { ...sf, fill: css('--red'), 'text-anchor':'start' }));
+    svgEl.appendChild(svgText(pad + largeBase/2 - 10, largeCy-triH/2-5, 'L=secθ',
+      { ...sf, fill: css('--purple'), 'text-anchor':'middle' }));
+
+    // Small: label base ST=?, vert ST′=?, hyp TT′=δT
+    svgEl.appendChild(svgText(smallCx-smallBase2/2, smallCy+14, 'ST≍L·Δθ',
+      { ...sf, fill: css('--green'), 'text-anchor':'middle' }));
+    svgEl.appendChild(svgText(smallCx+10, smallCy-smallH/2, "ST′",
+      { ...sf, fill: css('--red'), 'text-anchor':'start' }));
+    svgEl.appendChild(svgText(smallCx-smallBase2/2-10, smallCy-smallH/2-5, 'TT′=δT',
+      { ...sf, fill: css('--purple'), 'text-anchor':'middle' }));
+
+    // ── Scale factor annotation ──
+    svgEl.appendChild(svgText(W/2, H-2, `scale ≈ δT/secθ = ${scaleFactor.toFixed(3)}  →  0 as Δθ→0`,
+      { ...sf, fill: css('--text-muted'), 'text-anchor':'middle', opacity:'0.75' }));
+  }
+
   // ══════════════════════════════════════════════════════════════════════════
   // EXPLORER (main interactive canvas)
   // ══════════════════════════════════════════════════════════════════════════
@@ -1593,6 +1758,7 @@
       dtheta: dth,
       showStep: 4,   // Explorer always shows everything
     });
+    drawComparison(document.getElementById('compare-svg'), th, dth);
 
     // Live values
     document.getElementById('rv-theta').textContent  = (theta).toFixed(1) + '°';
