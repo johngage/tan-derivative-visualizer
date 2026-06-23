@@ -961,7 +961,7 @@
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--purple)"></div>
-              △TT′S — evanescent triangle ∼ △OBT (ultimately similar)
+              △TT′C — evanescent triangle ∼ △OBT; ψ at C → 90° from above
             </div>
             <div class="legend-row">
               <div class="legend-pip" style="background:var(--text-muted); border-top:2px dashed var(--text-muted); height:0"></div>
@@ -1059,23 +1059,28 @@
             angle θ at O.
           </p>
           <p>
-            <strong>Small triangle △TT′S</strong> — T and T′&nbsp;=&nbsp;(1,&nbsp;tan(θ+Δθ)) are
-            adjacent points on the tangent line x&nbsp;=&nbsp;1; S is the foot of the perpendicular
-            from T onto the ray OT′. The hypotenuse TT′&nbsp;=&nbsp;δT is exactly the increment
-            Δtan we want to measure.
+            <strong>Small triangle △TT′C</strong> — T and T′&nbsp;=&nbsp;(1,&nbsp;tan(θ+Δθ)) are
+            the two endpoints of δT on the tangent line x&nbsp;=&nbsp;1.
+            C is the intersection of two rays: from T along the tangent to the arc at T
+            (direction θ+π/2), and from T′ along the ray OT′ (direction θ+Δθ).
+            The hypotenuse TT′&nbsp;=&nbsp;δT is the increment Δtan.
           </p>
           <p>
-            As Δθ → 0, ∠T (at the vertex T) approaches θ and ∠T′ approaches 90°−θ —
-            matching the angles of △OBT exactly, so the small triangle becomes
-            <strong>ultimately similar</strong> to the large one (Newton's evanescent triangles):
+            The angle at T is <strong>exactly θ</strong> for any Δθ — the side TC
+            is tangent to the arc at T, so it makes angle θ with the vertical TT′ by construction.
+            The angle ψ at C starts greater than 90° and approaches 90° from above as Δθ→0.
+            This is Needham's "ψ ≍ π/2". The triangle then becomes
+            <strong>ultimately similar</strong> to △OBT (Newton's evanescent triangles):
           </p>
           <div class="formula-block">
-            △TT′S ∼ △OBT &nbsp;(in the limit Δθ → 0)<br/>
-            similarity ratio&nbsp;=&nbsp;L / 1&nbsp;=&nbsp;sec θ
+            △TT′C ∼ △OBT &nbsp;(in the limit Δθ → 0)<br/>
+            ∠T = θ (exact) &nbsp;↔&nbsp; ∠O = θ<br/>
+            ψ at C → 90° &nbsp;↔&nbsp; ∠B = 90°<br/>
+            ∠T′ → 90°−θ &nbsp;↔&nbsp; ∠T in △OBT
           </div>
           <p>
             The side of the small triangle corresponding to OB&nbsp;=&nbsp;1 is the arc δs
-            at radius L subtending Δθ. By the arc-length formula, δs&nbsp;=&nbsp;L·Δθ&nbsp;=&nbsp;sec θ·Δθ.
+            at radius L subtending Δθ. By the arc-length formula, δs&nbsp;=&nbsp;L·Δθ.
             From the similar triangles, δT / δs ≍ L / 1, so:
           </p>
           <div class="formula-block">
@@ -1088,7 +1093,7 @@
           <div class="nstep-num">Step 05</div>
           <h3>The limit — evanescent triangles become exact</h3>
           <p>
-            As <span class="f-green">Δθ → 0</span>, the small triangle △TT′S physically
+            As <span class="f-green">Δθ → 0</span>, the small triangle △TT′C physically
             shrinks — but its <em>shape</em> converges exactly to the shape of △OBT.
             Newton called such vanishing figures <strong>evanescent triangles</strong>;
             their ratio persists even as the triangles themselves disappear.
@@ -1104,7 +1109,7 @@
           </div>
           <p>
             Drag <span class="f-green">Δθ</span> to nearly zero in the interactive explorer above
-            and watch the small triangle △TT′S shrink while the ratio column turns green.
+            and watch the small triangle △TT′C shrink while the ratio column turns green.
           </p>
         </div>
 
@@ -1158,7 +1163,7 @@
         <div class="id-card">
           <div class="id-card-num">03</div>
           <div class="id-card-title">Ultimate similar triangles</div>
-          <div class="id-card-desc">As Δθ → 0, small △TT′S becomes ultimately similar to large △OBT (Newton's evanescent triangles). Similarity ratio L/1 = sec θ; arc δs = L·Δθ; so δT ≍ L·δs = sec²θ·Δθ.</div>
+          <div class="id-card-desc">As Δθ → 0, small △TT′C becomes ultimately similar to large △OBT (Newton's evanescent triangles). C = intersection of tangent at T with ray OT′; ∠T=θ exact, ψ at C → 90°. Arc δs=L·Δθ; δT ≍ L·δs = sec²θ·Δθ.</div>
         </div>
         <div class="id-card">
           <div class="id-card-num">04</div>
@@ -1397,8 +1402,8 @@
     //   T  = (1, tan θ)      — current intersection on x=1
     //   T' = (1, tan(θ+Δθ)) — next intersection on x=1
     //   The second radial ray OQ meets x=1 at T'; as Δθ→0, ∠T→θ and ∠T′→90°−θ,
-    //   matching △OBT (because OT' rotates toward OT, making the small triangle
-    //   tangent direction, mirroring how ∠O in the large triangle = θ with ∠B=90°).
+    //   because ∠T = θ exactly (TC lies along tangent at T, making angle θ with TT′)
+    //   and ψ at C > 90°, ψ → 90° from above as Δθ→0 (Needham: "ψ ≍ π/2").
     //
     // ULTIMATE SIMILARITY (Newton's "evanescent triangles"):
     //   As Δθ→0 the small triangle at T' becomes ultimately similar to △OBT.
@@ -1448,53 +1453,114 @@
         fill: css('--purple'), opacity:'0.85', 'text-anchor':'middle','font-weight':'600'
       }));
 
-      // ── Small triangle at T — the "evanescent" similar triangle ──
-      // Vertices: T=(1,tanθ), T'=(1,tan(θ+Δθ)), and the foot of the
-      // perpendicular from T onto the second ray OT'.
-      // In the limit the small triangle is ultimately similar to △OBT.
+      // ── Small triangle at T — Needham's evanescent triangle △TT′C ──
+      // Vertices:
+      //   T  = (1, tan θ)        — hypotenuse foot, ∠T = θ exactly (by construction)
+      //   T' = (1, tan(θ+Δθ))    — hypotenuse foot, ∠T′ → 90°−θ as Δθ→0
+      //   C  = intersection of:
+      //          ray from T  in direction (θ+π/2) = tangent to arc at T
+      //          ray from T' in direction (θ+Δθ)  = along OT′
+      //        ψ at C > 90°, ψ → 90° as Δθ→0  (Needham's "ψ ≍ π/2")
+      //
+      // In math coords: t = δT·cos(θ+Δθ)/cos(Δθ)
+      //   Cx = 1 − t·sinθ,  Cy = tanθ + t·cosθ
+      // In SVG coords (y-flipped, scaled by R, offset by OX/OY):
+      //   The tangent direction at T in SVG is (−sin θ, +sin θ ... wait, y-flip):
+      //   Math tangent direction at T: (−sinθ, cosθ)
+      //   SVG y-flip: (−sinθ, −cosθ)  [because y increases downward]
+      //   OT' direction in math: (cos(θ+Δθ), sin(θ+Δθ))
+      //   OT' direction in SVG:  (cos(θ+Δθ), −sin(θ+Δθ))
+
       const Tpx = tx1, Tpy = toY(tanTh2);  // T' on x=1
 
-      // Foot of perpendicular from T onto line OT'
-      // OT' direction unit vector in SVG:
-      const OTp_dx = Tpx - OX, OTp_dy = Tpy - OY;
-      const OTp_len = Math.sqrt(OTp_dx*OTp_dx + OTp_dy*OTp_dy)||1;
-      const dOT_dx = Tx - OX, dOT_dy = Ty - OY;
-      const t2 = (dOT_dx*OTp_dx + dOT_dy*OTp_dy) / (OTp_dx*OTp_dx + OTp_dy*OTp_dy);
-      const Spx = OX + t2*OTp_dx, Spy = OY + t2*OTp_dy;  // foot S
+      // δT in math coords
+      const dT_math = tanTh2 - tanTh;
 
-      // Fill small triangle T–T'–S
+      // t = δT · cos(θ+Δθ) / cos(Δθ)
+      const t_C = dT_math * Math.cos(th2) / Math.cos(dth);
+
+      // C in math coords: (1 − t·sinθ, tanθ + t·cosθ)
+      const Cx_math = 1 - t_C * Math.sin(th);
+      const Cy_math = tanTh + t_C * Math.cos(th);
+
+      // C in SVG coords
+      const Cpx = toX(Cx_math), Cpy = toY(Cy_math);
+
+      // Fill small triangle T–T′–C
       svgEl.appendChild(svgPath(
-        `M ${Tx} ${Ty} L ${Tpx} ${Tpy} L ${Spx} ${Spy} Z`,
-        { fill: css('--purple'), opacity: '0.25',
+        `M ${Tx} ${Ty} L ${Tpx} ${Tpy} L ${Cpx} ${Cpy} Z`,
+        { fill: css('--purple'), opacity: '0.22',
           stroke: css('--purple'), 'stroke-width': '2',
           'stroke-linejoin':'round', 'stroke-opacity':'0.9' }
       ));
 
-      // Right-angle mark at S
-      const rSz2 = 5;
-      const fp2Len = Math.sqrt((Tx-Spx)**2+(Ty-Spy)**2)||1;
-      const fq2Len = Math.sqrt((Tpx-Spx)**2+(Tpy-Spy)**2)||1;
-      const fp2Ux = (Tx-Spx)/fp2Len, fp2Uy = (Ty-Spy)/fp2Len;
-      const fq2Ux = (Tpx-Spx)/fq2Len, fq2Uy = (Tpy-Spy)/fq2Len;
+      // ── ψ arc at C showing the obtuse angle closing to 90° ──
+      // Directions from C: toward T and toward T'
+      const CTdx = Tx-Cpx, CTdy = Ty-Cpy;
+      const CTlen = Math.sqrt(CTdx*CTdx+CTdy*CTdy)||1;
+      const CTpx2 = Tpx-Cpx, CTpy2 = Tpy-Cpy;
+      const CTplen = Math.sqrt(CTpx2*CTpx2+CTpy2*CTpy2)||1;
+      const psiArcR = Math.min(CTlen, CTplen)*0.35;
+      const angCT  = Math.atan2(CTdy,  CTdx);
+      const angCTp = Math.atan2(CTpy2, CTpx2);
+      // Draw small arc at C from angCT to angCTp (the obtuse angle)
+      const psiAx = Cpx + psiArcR*Math.cos(angCT);
+      const psiAy = Cpy + psiArcR*Math.sin(angCT);
+      const psiBx = Cpx + psiArcR*Math.cos(angCTp);
+      const psiBy = Cpy + psiArcR*Math.sin(angCTp);
+      // large-arc flag = 1 because ψ > 90°
       svgEl.appendChild(svgPath(
-        `M ${Spx+fp2Ux*rSz2} ${Spy+fp2Uy*rSz2} L ${Spx+fp2Ux*rSz2+fq2Ux*rSz2} ${Spy+fp2Uy*rSz2+fq2Uy*rSz2} L ${Spx+fq2Ux*rSz2} ${Spy+fq2Uy*rSz2}`,
-        { fill:'none', stroke: css('--purple'), 'stroke-width':'1.3', opacity:'0.9' }
+        `M ${psiAx} ${psiAy} A ${psiArcR} ${psiArcR} 0 1 0 ${psiBx} ${psiBy}`,
+        { fill:'none', stroke: css('--accent'), 'stroke-width':'1.4',
+          'stroke-dasharray':'3,2', opacity:'0.8' }
+      ));
+      // ψ label at C
+      const psiLabelAng = (angCT + angCTp)/2 + Math.PI; // opposite side of arc
+      svgEl.appendChild(svgText(
+        Cpx + (psiArcR+10)*Math.cos(psiLabelAng),
+        Cpy + (psiArcR+10)*Math.sin(psiLabelAng),
+        'ψ→90°',
+        { 'font-family':'JetBrains Mono, monospace','font-size':'9',
+          fill: css('--accent'), 'font-weight':'700', 'text-anchor':'middle' }
+      ));
+
+      // ── θ mark at T (exact, by construction) ──
+      const thetaMarkR = 10;
+      // Direction T→C (tangent direction, angle θ+π/2 in math, so in SVG: angle −(θ+π/2))
+      const angTC_svg = Math.atan2(Cpy-Ty, Cpx-Tx);
+      // Direction T→T' (vertical downward in SVG, since both on x=1 and T' is above T in math)
+      const angTTp_svg = Math.atan2(Tpy-Ty, Tpx-Tx);
+      const thetaAx = Tx + thetaMarkR*Math.cos(angTC_svg);
+      const thetaAy = Ty + thetaMarkR*Math.sin(angTC_svg);
+      const thetaBx = Tx + thetaMarkR*Math.cos(angTTp_svg);
+      const thetaBy = Ty + thetaMarkR*Math.sin(angTTp_svg);
+      svgEl.appendChild(svgPath(
+        `M ${thetaAx} ${thetaAy} A ${thetaMarkR} ${thetaMarkR} 0 0 0 ${thetaBx} ${thetaBy}`,
+        { fill:'none', stroke: css('--gold'), 'stroke-width':'1.4', opacity:'0.9' }
+      ));
+      svgEl.appendChild(svgText(
+        Tx + (thetaMarkR+7)*Math.cos((angTC_svg+angTTp_svg)/2),
+        Ty + (thetaMarkR+7)*Math.sin((angTC_svg+angTTp_svg)/2),
+        'θ',
+        { 'font-family':'JetBrains Mono, monospace','font-size':'9',
+          fill: css('--gold'), 'font-weight':'700', 'text-anchor':'middle' }
       ));
 
       // Vertex labels for small triangle
       const sf2 = { 'font-family':'JetBrains Mono, monospace','font-weight':'700','font-size':'10' };
-      // T' label
+      // T' label — to the right of T'
       svgEl.appendChild(svgText(Tpx+9, Tpy+4, "T'", { ...sf2, fill: css('--green') }));
-      // S label (foot) — offset away from centroid
-      const smCx = (Tx+Tpx+Spx)/3, smCy = (Ty+Tpy+Spy)/3;
-      const sDist = Math.sqrt((Spx-smCx)**2+(Spy-smCy)**2)||1;
+      // C label — offset away from centroid
+      const smCx2 = (Tx+Tpx+Cpx)/3, smCy2 = (Ty+Tpy+Cpy)/3;
+      const cDist = Math.sqrt((Cpx-smCx2)**2+(Cpy-smCy2)**2)||1;
       svgEl.appendChild(svgText(
-        Spx+(Spx-smCx)/sDist*14, Spy+(Spy-smCy)/sDist*14+4, 'S',
-        { ...sf2, fill: css('--purple'), 'text-anchor':'middle' }
+        Cpx+(Cpx-smCx2)/cDist*14, Cpy+(Cpy-smCy2)/cDist*14,
+        'C',
+        { ...sf2, fill: css('--accent'), 'text-anchor':'middle' }
       ));
 
       // ── Similarity label ──
-      svgEl.appendChild(svgText(tx1+52, (Ty+Tpy)/2 - 2, '△TT′S ∼ △OBT', {
+      svgEl.appendChild(svgText(tx1+52, (Ty+Tpy)/2 - 2, '△TT′C ∼ △OBT', {
         'font-family':'JetBrains Mono, monospace','font-size':'9.5',
         fill: css('--purple'), opacity:'0.9','text-anchor':'start','font-weight':'700'
       }));
@@ -1612,7 +1678,7 @@
     //   color scheme
     //   labels: {origin, right, top}  (vertex label strings)
     //   angleLabels: {origin, top}    (angle label strings, shown near each vertex)
-    function drawTri(cx, cy, base, height, scheme, labels, angleLabels) {
+    function drawTri(cx, cy, base, height, scheme, labels, angleLabels, skipRightMark) {
       // Vertices
       const Rx = cx,        Ry = cy;          // right angle (bottom-right)
       const Ox = cx - base, Oy = cy;          // "origin" vertex (bottom-left, angle θ)
@@ -1638,12 +1704,25 @@
         svgEl.appendChild(svgPath(`M ${x1} ${y1} L ${x2} ${y2}`,
           { fill:'none', ...sideStyles[i] }));
       });
-      // Right-angle mark
-      const rs = 7;
-      svgEl.appendChild(svgPath(
-        `M ${Rx-rs} ${Ry} L ${Rx-rs} ${Ry-rs} L ${Rx} ${Ry-rs}`,
-        { fill:'none', stroke: scheme.base, 'stroke-width':'1.2' }
-      ));
+      // Right-angle mark (exact 90° — skip for C vertex where ψ→90° only in limit)
+      if (!skipRightMark) {
+        const rs = 7;
+        svgEl.appendChild(svgPath(
+          `M ${Rx-rs} ${Ry} L ${Rx-rs} ${Ry-rs} L ${Rx} ${Ry-rs}`,
+          { fill:'none', stroke: scheme.base, 'stroke-width':'1.2' }
+        ));
+      } else {
+        // Draw ψ arc instead — small arc showing obtuse angle closing to 90°
+        const rs = 9;
+        svgEl.appendChild(svgPath(
+          `M ${Rx-rs} ${Ry} A ${rs} ${rs} 0 0 0 ${Rx} ${Ry-rs}`,
+          { fill:'none', stroke: scheme.base, 'stroke-width':'1.2', 'stroke-dasharray':'2,2' }
+        ));
+        svgEl.appendChild(svgText(Rx-rs-2, Ry-rs-2, 'ψ→90°',
+          { 'font-family':'JetBrains Mono,monospace','font-size':'7', fill: scheme.base,
+            'text-anchor':'end' }
+        ));
+      }
       // Vertex labels
       const vf = { 'font-family':'JetBrains Mono,monospace','font-weight':'700','font-size':'11' };
       svgEl.appendChild(svgText(Ox-14, Oy+5,  labels.origin, { ...vf, fill: scheme.hyp,  'text-anchor':'middle' }));
@@ -1693,10 +1772,11 @@
       { origin: 'θ', top: '90°−θ' }
     );
 
-    // Draw small △TT′S (same shape, scaled by δT/L)
+    // Draw small △TT′C — ψ at C approaches 90° (not exact), so skip right-angle mark
     drawTri(smallCx, smallCy, smallBase2, smallH, schSmall,
-      { origin: 'T', right: 'S', top: "T'"},
-      { origin: 'θ→', top: '→90°−θ' }
+      { origin: 'T', right: 'C', top: "T'"},
+      { origin: 'θ (exact)', top: '→90°−θ' },
+      true  // skipRightMark: C has ψ→90°, not exact 90°
     );
 
     // ── "∼" similarity symbol between them ──
@@ -1717,15 +1797,15 @@
       { ...sf, fill: css('--purple'), 'text-anchor':'middle' }));
 
     // Small: label base ST=?, vert ST′=?, hyp TT′=δT
-    svgEl.appendChild(svgText(smallCx-smallBase2/2, smallCy+14, 'ST≍L·Δθ',
+    svgEl.appendChild(svgText(smallCx-smallBase2/2, smallCy+14, 'CT (→0)',
       { ...sf, fill: css('--green'), 'text-anchor':'middle' }));
     svgEl.appendChild(svgText(smallCx+10, smallCy-smallH/2, "ST′",
       { ...sf, fill: css('--red'), 'text-anchor':'start' }));
-    svgEl.appendChild(svgText(smallCx-smallBase2/2-10, smallCy-smallH/2-5, 'TT′=δT',
+    svgEl.appendChild(svgText(smallCx-smallBase2/2-10, smallCy-smallH/2-5, 'hyp=δT',
       { ...sf, fill: css('--purple'), 'text-anchor':'middle' }));
 
     // ── Scale factor annotation ──
-    svgEl.appendChild(svgText(W/2, H-2, `scale ≈ δT/secθ = ${scaleFactor.toFixed(3)}  →  0 as Δθ→0`,
+    svgEl.appendChild(svgText(W/2, H-2, `ψ = 90°+Δθ → 90°  |  scale = δT/secθ = ${scaleFactor.toFixed(3)} → 0`,
       { ...sf, fill: css('--text-muted'), 'text-anchor':'middle', opacity:'0.75' }));
   }
 
